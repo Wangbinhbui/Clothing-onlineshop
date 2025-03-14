@@ -1,38 +1,51 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
+ */
+
 package com.shop.swp391.controller.home;
 
-import com.shop.swp391.dal.StoryDAO;
-import com.shop.swp391.entity.Story;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
-import java.util.List;
+import java.io.PrintWriter;
 
-@WebServlet(name = "HomeController", urlPatterns = {"/home"})
+@WebServlet(name="HomeController", urlPatterns={"/home"})
 public class HomeController extends HttpServlet {
-
-   @Override
+   
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        
+        request.getRequestDispatcher("view/homepage/homepage.jsp").forward(request, response);
+        //view/dashboard/admin/user-list.jsp || view/homepage/homepage.jsp
     } 
 
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException {
-        String action = request.getParameter("action");
-        StoryDAO storyDAO = new StoryDAO();
-
-        if ("activate".equals(action)) {
-            int storyId = Integer.parseInt(request.getParameter("storyId"));
-            boolean updated = storyDAO.updateStoryStatus(storyId, "Active");
-            response.setContentType("application/json");
-            response.getWriter().write("{\"success\": " + updated + "}");
-        }
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    throws ServletException, IOException {
+        request.getRequestDispatcher("view/homepage/homepage.jsp").forward(request, response);
     }
+
+   
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+    throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet HomeController</title>");  
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet HomeController at " + request.getContextPath () + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
+        }
+    } 
 
 }
