@@ -410,5 +410,97 @@ public class ProductDAO extends DBContext implements I_DAO<Product> {
         return products;
     }
 
+    public int getTotalProductCount(Double minPrice, Double maxPrice, Integer colorID) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM product p");
+
+        if (colorID != null) {
+            sql.append(" JOIN variation v ON p.ProductID = v.ProductID");
+        }
+        sql.append(" WHERE 1=1");
+
+        if (minPrice != null) {
+            sql.append(" AND p.Price >= ").append(minPrice);
+        }
+        if (maxPrice != null) {
+            sql.append(" AND p.Price <= ").append(maxPrice);
+        }
+
+        if (colorID != null) {
+            sql.append(" AND v.color_ID = ").append(colorID);
+        }
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql.toString());
+            resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error fetching total product count", e);
+        }
+        return 0;
+    }
+
+    public List<Product> findWithFilters(String search, Integer categoryId, Integer collectionId,
+                                       Double minPrice, Double maxPrice, Integer status) {
+        List<Product> products = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT * FROM product WHERE 1=1");
+        List<Object> params = new ArrayList<>();
+
+        if (search != null && !search.isEmpty()) {
+            sql.append(" AND ProductName LIKE ?");
+            params.add("%" + search + "%");
+        }
+        if (categoryId != null) {
+            sql.append(" AND CategoryID = ?");
+            params.add(categoryId);
+        }
+        if (collectionId != null) {
+            sql.append(" AND CollectionID = ?");
+            params.add(collectionId);
+        }
+        if (minPrice != null) {
+            sql.append(" AND Price >= ?");
+            params.add(minPrice);
+        }
+        if (maxPrice != null) {
+            sql.append(" AND Price <= ?");
+            params.add(maxPrice);
+        }
+        if (status != null) {
+            sql.append(" AND status = ?");
+            params.add(status);
+        }
+
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql.toString());
+            
+            for (int i = 0; i < params.size(); i++) {
+                Object param = params.get(i);
+                if (param instanceof String) {
+                    statement.setString(i + 1, (String) param);
+                } else if (param instanceof Integer) {
+                    statement.setInt(i + 1, (Integer) param);
+                } else if (param instanceof Double) {
+                    statement.setDouble(i + 1, (Double) param);
+                }
+            }
+            
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                products.add(getFromResultSet(resultSet));
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error in findWithFilters: " + ex.getMessage());
+        } finally {
+            closeResources();
+        }
+        return products;
+    }
+
     
+
 }
