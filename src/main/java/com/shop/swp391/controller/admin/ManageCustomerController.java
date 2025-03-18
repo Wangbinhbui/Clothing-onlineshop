@@ -118,6 +118,20 @@ public class ManageCustomerController extends HttpServlet {
         response.sendRedirect(request.getContextPath() + "/manage-users");
     }
 
-   
+    private void showAddForm(HttpServletRequest request, HttpServletResponse response) {
+        
+    }
+
+    private void deactivateUser(HttpServletRequest request, HttpServletResponse response) {
+        
+    }
+
+    private void updateUser(HttpServletRequest request, HttpServletResponse response) {
+        
+    }
+
+    private void addUser(HttpServletRequest request, HttpServletResponse response) {
+        
+    }
 
 }
