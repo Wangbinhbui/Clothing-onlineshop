@@ -21,7 +21,7 @@ public class SizeDAO extends DBContext implements I_DAO<Size>{
         List<Size> sizes = new ArrayList<>();
         String sql = "SELECT * FROM size";
         try {
-            connection = new DBContext().connection;
+            connection = getConnection();
             statement = connection.prepareStatement(sql);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -29,31 +29,51 @@ public class SizeDAO extends DBContext implements I_DAO<Size>{
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            closeResources();
         }
         return sizes;
     }
 
     @Override
     public boolean update(Size t) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public boolean delete(Size t) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public int insert(Size t) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public Size getFromResultSet(ResultSet rs) throws SQLException {
         return new Size(
             rs.getInt("size_ID"),
-            rs.getString("size_Name")
+            rs.getString("size_name")
         );
     }
     
+    public Size findById(int id) {
+        Size size = null;
+        String sql = "SELECT * FROM size WHERE size_ID = ?";
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, id);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                size = getFromResultSet(resultSet);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+        return size;
+    }
 }
