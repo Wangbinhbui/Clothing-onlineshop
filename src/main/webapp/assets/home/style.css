@@ -80,36 +80,16 @@ CSS INDEX
 .read-more {
     display: inline-block;
     margin-top: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #6D4C41; /* Màu nâu trầm sang trọng */
+    padding: 8px 12px;
+    background: #007bff;
+    color: white;
     text-decoration: none;
-    transition: all 0.3s ease-in-out;
-    position: relative;
-}
-
-.read-more::after {
-    content: '';
-    display: block;
-    width: 100%;
-    height: 2px;
-    background-color: #6D4C41; /* Gạch chân khi hover */
-    transform: scaleX(0);
-    transition: transform 0.3s ease-in-out;
-    margin-top: 2px;
+    border-radius: 5px;
 }
 
 .read-more:hover {
-    color: #3E2723; /* Tối màu hơn khi hover */
+    background: #0056b3;
 }
-
-.read-more:hover::after {
-    transform: scaleX(1);
-}
-
-
 
 .boxed-layout .wrapper,
 .fixed-box {

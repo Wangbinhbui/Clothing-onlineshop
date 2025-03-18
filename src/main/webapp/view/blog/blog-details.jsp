@@ -74,23 +74,81 @@
                                     <!--single aside end-->
 
                                     <!--single aside start-->
-                                       <aside class="single-aside catagories-aside">
-                                    <div class="heading-title aside-title pos-rltv">
-                                        <h5 class="uppercase">Categories</h5>
-                                    </div>
-                                    <div id="cat-treeview" class="product-cat">
-                                        <ul>
-                                            <c:forEach var="cat" items="${categories}">
-                                                <li class="closed">
-                                                    <!-- Khi click vào category, chuyển qua action=category với parameter "category" -->
-                                                    <a href="${pageContext.request.contextPath}/blog?action=category&category=${cat.id}">
-                                                        ${cat.name}
-                                                    </a>
+                                    <aside class="single-aside catagories-aside">
+                                        <div class="heading-title aside-title pos-rltv">
+                                            <h5 class="uppercase">categories</h5>
+                                        </div>
+                                        <div id="cat-treeview" class="product-cat">
+                                            <ul>
+                                                <li class="closed"><a href="#">Men (05)</a>
+                                                    <ul>
+                                                        <li><a href="#">T-Shirt</a></li>
+                                                        <li><a href="#">Shirt</a></li>
+                                                        <li><a href="#">Pant</a></li>
+                                                        <li><a href="#">Shoe</a></li>
+                                                        <li><a href="#">Gifts</a></li>
+                                                    </ul>
                                                 </li>
-                                            </c:forEach>
-                                        </ul>
-                                    </div>
-                                </aside>
+                                                <li class="closed"><a href="#">Women (10)</a>
+                                                    <ul>
+                                                        <li><a href="#">T-Shirt</a>
+                                                            <ul>
+                                                                <li><a href="#">T-Shirt 01</a></li>
+                                                                <li><a href="#">T-Shirt 02</a></li>
+                                                            </ul>
+                                                        </li>
+                                                        <li><a href="#">Shirt</a>
+                                                            <ul>
+                                                                <li><a href="#">Shirt 01</a></li>
+                                                                <li><a href="#">Shirt 02</a></li>
+                                                            </ul>
+                                                        </li>
+                                                        <li><a href="#">Pant</a>
+                                                            <ul>
+                                                                <li><a href="#">Pant 01</a></li>
+                                                                <li><a href="#">Pant 02</a></li>
+                                                            </ul>
+                                                        </li>
+                                                        <li><a href="#">Shoe</a>
+                                                            <ul>
+                                                                <li><a href="#">Shoe 01</a></li>
+                                                                <li><a href="#">Shoe 02</a></li>
+                                                            </ul>
+                                                        </li>
+                                                        <li><a href="#">Gifts</a>
+                                                            <ul>
+                                                                <li><a href="#">Gift 01</a></li>
+                                                                <li><a href="#">Gift 02</a></li>
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                                <li class="closed"><a href="#">Accessories (07)</a>
+                                                    <ul>
+                                                        <li><a href="#">Accessories 01</a></li>
+                                                        <li><a href="#">Accessories 02</a></li>
+                                                        <li><a href="#">Accessories 03</a></li>
+                                                    </ul>
+                                                </li>
+                                                <li class="closed"><a href="#">Beauty (06)</a>
+                                                    <ul>
+                                                        <li><a href="#">Beauty 01</a></li>
+                                                        <li><a href="#">Beauty 02</a></li>
+                                                        <li><a href="#">Beauty 03</a></li>
+                                                    </ul>
+                                                </li>
+                                                <li class="closed"><a href="#">Watch (09)</a>
+                                                    <ul>
+                                                        <li><a href="#">Watch 01</a></li>
+                                                        <li><a href="#">Watch 02</a></li>
+                                                        <li><a href="#">Watch 03</a></li>
+                                                    </ul>
+                                                </li>
+                                                <li class="closed"><a href="#">Sports</a></li>
+                                                <li class="closed"><a href="#">Others</a></li>
+                                            </ul>
+                                        </div>
+                                    </aside>
                                     <!--single aside end-->
 
                                     <!--single aside start-->
@@ -369,6 +427,8 @@
                                             <h5 class="uppercase font-bold">${blog.title}</h5>
                                             <div class="like-comments-date">
                                                 <ul>
+                                                    <li><i class="zmdi zmdi-favorite-outline"></i> 24 Likes</li>
+                                                    <li><i class="zmdi zmdi-comment-outline"></i> 24 Comments</li>
                                                     <li class="blog-date"><i class="zmdi zmdi-calendar-alt"></i> ${blog.updatedDate}</li>
                                                 </ul>
                                             </div>
@@ -396,7 +456,13 @@
                                                                             ${relatedBlog.title}
                                                                         </a>
                                                                     </h5>
-                                                                
+                                                                    <div class="like-comments-date">
+                                                                        <ul>
+                                                                            <li><i class="zmdi zmdi-favorite-outline"></i> ${relatedBlog.likes} Likes</li>
+                                                                            <li><i class="zmdi zmdi-comment-outline"></i> ${relatedBlog.commentsCount} Comments</li>
+                                                                            <li class="blog-date"><i class="zmdi zmdi-calendar-alt"></i> ${relatedBlog.datePosted}</li>
+                                                                        </ul>
+                                                                    </div>
                                                                     <div class="blog-text">
                                                                         <p>${relatedBlog.briefInfo}</p>
                                                                     </div>
@@ -413,7 +479,7 @@
                             </div>
                         </div>
                     </div>
-             <div class="comments-area fix mt-20">
+                                                                    <div class="comments-area fix mt-20">
                             <h5 class="uppercase sb-title">Comments Area</h5>
                             <div class="comments-body">
                                 <ul>

@@ -4,541 +4,190 @@
     Author     : ADMIN
 --%>
 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <!-- meta tags and other links -->
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 
-<!-- Mirrored from wowdash.wowtheme7.com/demo/users-list.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 03 Feb 2025 04:44:16 GMT -->
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wowdash - Bootstrap 5 Admin Dashboard HTML Template</title>
-  <link rel="icon" type="image/png" href="assets/images/favicon.png" sizes="16x16">
-  <!-- CSS here -->
-  <jsp:include page="../../common/dashboard/css-dashboard.jsp"></jsp:include>
-</head>
-  <body>
-      <!-- Sidebar -->
-      <jsp:include page="../../common/dashboard/sidebar-dashboard.jsp"></jsp:include>
+    <!-- Mirrored from wowdash.wowtheme7.com/demo/users-list.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 03 Feb 2025 04:44:16 GMT -->
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Store 24-Manage users</title>
+        <link rel="icon" type="image/png" href="assets/images/favicon.png" sizes="16x16">
+        <!-- CSS here -->
+        <jsp:include page="../../common/dashboard/css-dashboard.jsp"></jsp:include>
+        </head>
+        <body>
+            <!-- Sidebar -->
+        <jsp:include page="../../common/dashboard/sidebar-dashboard.jsp"></jsp:include>
 
-      <!-- Header -->
-      <jsp:include page="../../common/dashboard/header-dashboard.jsp"></jsp:include>
-    
-    <div class="dashboard-main-body">
-        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
-  <h6 class="fw-semibold mb-0">Users List</h6>
-  <ul class="d-flex align-items-center gap-2">
-    <li class="fw-medium">
-      <a href="index.html" class="d-flex align-items-center gap-1 hover-text-primary">
-        <iconify-icon icon="solar:home-smile-angle-outline" class="icon text-lg"></iconify-icon>
-        Dashboard
-      </a>
-    </li>
-    <li>-</li>
-    <li class="fw-medium">Users List</li>
-  </ul>
-</div>
+            <!-- Header -->
+        <jsp:include page="../../common/dashboard/header-dashboard.jsp"></jsp:include>
 
-        <div class="card h-100 p-0 radius-12">
-            <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
-                <div class="d-flex align-items-center flex-wrap gap-3">
-                    <span class="text-md fw-medium text-secondary-light mb-0">Show</span>
-                    <select class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                        <option>6</option>
-                        <option>7</option>
-                        <option>8</option>
-                        <option>9</option>
-                        <option>10</option>
-                    </select>
-                    <form class="navbar-search">
-                        <input type="text" class="bg-base h-40-px w-auto" name="search" placeholder="Search">
-                        <iconify-icon icon="ion:search-outline" class="icon"></iconify-icon>
-                    </form>
-                    <select class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px">
-                        <option>Status</option>
-                        <option>Active</option>
-                        <option>Inactive</option>
-                    </select>
-                    <select class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px">
-                        <option>Status</option>
-                        <option>Active</option>
-                        <option>Inactive</option>
-                    </select>
-                    <select class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px">
-                        <option>Status</option>
-                        <option>Active</option>
-                        <option>Inactive</option>
-                    </select>
-                </div>
-                <a href="add-user.html" class="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2"> 
-                    <iconify-icon icon="ic:baseline-plus" class="icon text-xl line-height-1"></iconify-icon>
-                    Add New User
-                </a>
+        <c:url value="/manage-users" var="paginationUrl">
+            <c:param name="action" value="list" />
+            <c:if test="${not empty param.role}">
+                <c:param name="role" value="${param.role}" />
+            </c:if>
+            <c:if test="${not empty param.sex}">
+                <c:param name="sex" value="${param.sex}" />
+            </c:if>
+            <c:if test="${not empty param.status}">
+                <c:param name="status" value="${param.status}" />
+            </c:if>
+            <c:if test="${not empty param.search}">
+                <c:param name="search" value="${param.search}" />
+            </c:if>
+        </c:url>
+
+        <div class="dashboard-main-body">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+                <h6 class="fw-semibold mb-0">Users List</h6>
+                <ul class="d-flex align-items-center gap-2">
+                    <li class="fw-medium">
+                        <a href="index.html" class="d-flex align-items-center gap-1 hover-text-primary">
+                            <iconify-icon icon="solar:home-smile-angle-outline" class="icon text-lg"></iconify-icon>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>-</li>
+                    <li class="fw-medium">Users List</li>
+                </ul>
             </div>
-            <div class="card-body p-24">
-                <div class="table-responsive scroll-sm">
-                    <table class="table bordered-table sm-table mb-0">
-                      <thead>
-                        <tr>
-                          <th scope="col">
-                            <div class="d-flex align-items-center gap-10">
-                                <div class="form-check style-check d-flex align-items-center">
-                                    <input class="form-check-input radius-4 border input-form-dark" type="checkbox" name="checkbox" id="selectAll">
-                                </div>
-                                S.L
-                            </div>
-                          </th>
-                          <th scope="col">Join Date</th>
-                          <th scope="col">Name</th>
-                          <th scope="col">Email</th>
-                          <th scope="col">Department</th>
-                          <th scope="col">Designation</th>
-                          <th scope="col" class="text-center">Status</th>
-                          <th scope="col" class="text-center">Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                            <td>
-                                <div class="d-flex align-items-center gap-10">
-                                    <div class="form-check style-check d-flex align-items-center">
-                                        <input class="form-check-input radius-4 border border-neutral-400" type="checkbox" name="checkbox">
-                                    </div>
-                                    01
-                                </div>
-                            </td>
-                            <td>25 Jan 2024</td>
-                          <td>
-                            <div class="d-flex align-items-center">
-                              <img src="${pageContext.request.contextPath}/assets/admin/images/user-list/user-list1.png" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                              <div class="flex-grow-1">
-                                <span class="text-md mb-0 fw-normal text-secondary-light">Kathryn Murphy</span>
-                              </div>
-                            </div>
-                          </td>
-                          <td><span class="text-md mb-0 fw-normal text-secondary-light">osgoodwy@gmail.com</span></td>
-                          <td>HR</td>
-                          <td>Manager</td>
-                          <td class="text-center">
-                            <span class="bg-success-focus text-success-600 border border-success-main px-24 py-4 radius-4 fw-medium text-sm">Active</span> 
-                          </td>
-                          <td class="text-center"> 
-                            <div class="d-flex align-items-center gap-10 justify-content-center">
-                                <button type="button" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"> 
-                                    <iconify-icon icon="majesticons:eye-line" class="icon text-xl"></iconify-icon>
-                                </button>
-                                <button type="button" class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"> 
-                                    <iconify-icon icon="lucide:edit" class="menu-icon"></iconify-icon>
-                                </button>
-                                <button type="button" class="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"> 
-                                    <iconify-icon icon="fluent:delete-24-regular" class="menu-icon"></iconify-icon>
-                                </button>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="d-flex align-items-center gap-10">
-                                    <div class="form-check style-check d-flex align-items-center">
-                                        <input class="form-check-input radius-4 border border-neutral-400" type="checkbox" name="checkbox">
-                                    </div>
-                                    02
-                                </div>
-                            </td>
-                            <td>25 Jan 2024</td>
-                          <td>
-                            <div class="d-flex align-items-center">
-                              <img src="${pageContext.request.contextPath}/assets/admin/images/user-list/user-list2.png" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                              <div class="flex-grow-1">
-                                <span class="text-md mb-0 fw-normal text-secondary-light">Annette Black</span>
-                              </div>
-                            </div>
-                          </td>
-                          <td><span class="text-md mb-0 fw-normal text-secondary-light">redaniel@gmail.com</span></td>
-                          <td>Design</td>
-                          <td>UI UX Designer</td>
-                          <td class="text-center">
-                            <span class="bg-neutral-200 text-neutral-600 border border-neutral-400 px-24 py-4 radius-4 fw-medium text-sm">Inactive</span> 
-                          </td>
-                          <td class="text-center"> 
-                            <div class="d-flex align-items-center gap-10 justify-content-center">
-                                <button type="button" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"> 
-                                    <iconify-icon icon="majesticons:eye-line" class="icon text-xl"></iconify-icon>
-                                </button>
-                                <button type="button" class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"> 
-                                    <iconify-icon icon="lucide:edit" class="menu-icon"></iconify-icon>
-                                </button>
-                                <button type="button" class="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"> 
-                                    <iconify-icon icon="fluent:delete-24-regular" class="menu-icon"></iconify-icon>
-                                </button>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="d-flex align-items-center gap-10">
-                                    <div class="form-check style-check d-flex align-items-center">
-                                        <input class="form-check-input radius-4 border border-neutral-400" type="checkbox" name="checkbox">
-                                    </div>
-                                    03
-                                </div>
-                            </td>
-                            <td>10 Feb 2024</td>
-                          <td>
-                            <div class="d-flex align-items-center">
-                              <img src="${pageContext.request.contextPath}/assets/admin/images/user-list/user-list3.png" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                              <div class="flex-grow-1">
-                                <span class="text-md mb-0 fw-normal text-secondary-light">Ronald Richards</span>
-                              </div>
-                            </div>
-                          </td>
-                          <td><span class="text-md mb-0 fw-normal text-secondary-light">seannand@mail.ru</span></td>
-                          <td>Design</td>
-                          <td>UI UX Designer</td>
-                          <td class="text-center">
-                            <span class="bg-success-focus text-success-600 border border-success-main px-24 py-4 radius-4 fw-medium text-sm">Active</span>
-                          </td>
-                          <td class="text-center"> 
-                            <div class="d-flex align-items-center gap-10 justify-content-center">
-                                <button type="button" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"> 
-                                    <iconify-icon icon="majesticons:eye-line" class="icon text-xl"></iconify-icon>
-                                </button>
-                                <button type="button" class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"> 
-                                    <iconify-icon icon="lucide:edit" class="menu-icon"></iconify-icon>
-                                </button>
-                                <button type="button" class="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"> 
-                                    <iconify-icon icon="fluent:delete-24-regular" class="menu-icon"></iconify-icon>
-                                </button>
-                            </div>
-                          </td>
-                        </tr>
 
-                        <tr>
-                            <td>
-                                <div class="d-flex align-items-center gap-10">
-                                    <div class="form-check style-check d-flex align-items-center">
-                                        <input class="form-check-input radius-4 border border-neutral-400" type="checkbox" name="checkbox">
-                                    </div>
-                                    04
-                                </div>
-                            </td>
-                            <td>10 Feb 2024</td>
-                          <td>
-                            <div class="d-flex align-items-center">
-                              <img src="${pageContext.request.contextPath}/assets/admin/images/user-list/user-list4.png" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                              <div class="flex-grow-1">
-                                <span class="text-md mb-0 fw-normal text-secondary-light">Eleanor Pena</span>
-                              </div>
+            <div class="card h-100 p-0 radius-12">
+                <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
+                    <div class="d-flex align-items-center flex-wrap gap-3"> 
+                        <form action="${pageContext.request.contextPath}/manage-users" method="GET" class="d-flex align-items-center gap-3">
+                            <div class="navbar-search">
+                                <input type="text" class="bg-base h-40-px w-auto" name="search" placeholder="Search" value='${param.search}'>
+                                <iconify-icon icon="ion:search-outline" class="icon"></iconify-icon>
                             </div>
-                          </td>
-                          <td><span class="text-md mb-0 fw-normal text-secondary-light">miyokoto@mail.ru</span></td>
-                          <td>Design</td>
-                          <td>UI UX Designer</td>
-                          <td class="text-center">
-                            <span class="bg-success-focus text-success-600 border border-success-main px-24 py-4 radius-4 fw-medium text-sm">Active</span>
-                          </td>
-                          <td class="text-center"> 
-                            <div class="d-flex align-items-center gap-10 justify-content-center">
-                                <button type="button" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"> 
-                                    <iconify-icon icon="majesticons:eye-line" class="icon text-xl"></iconify-icon>
-                                </button>
-                                <button type="button" class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"> 
-                                    <iconify-icon icon="lucide:edit" class="menu-icon"></iconify-icon>
-                                </button>
-                                <button type="button" class="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"> 
-                                    <iconify-icon icon="fluent:delete-24-regular" class="menu-icon"></iconify-icon>
-                                </button>
-                            </div>
-                          </td>
-                        </tr>
 
-                        <tr>
-                            <td>
-                                <div class="d-flex align-items-center gap-10">
-                                    <div class="form-check style-check d-flex align-items-center">
-                                        <input class="form-check-input radius-4 border border-neutral-400" type="checkbox" name="checkbox">
-                                    </div>
-                                    05
-                                </div>
-                            </td>
-                            <td>15 March 2024</td>
-                          <td>
-                            <div class="d-flex align-items-center">
-                              <img src="${pageContext.request.contextPath}/assets/admin/images/user-list/user-list5.png" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                              <div class="flex-grow-1">
-                                <span class="text-md mb-0 fw-normal text-secondary-light">Leslie Alexander</span>
-                              </div>
-                            </div>
-                          </td>
-                          <td><span class="text-md mb-0 fw-normal text-secondary-light">icadahli@gmail.com</span></td>
-                          <td>Design</td>
-                          <td>UI UX Designer</td>
-                          <td class="text-center">
-                            <span class="bg-neutral-200 text-neutral-600 border border-neutral-400 px-24 py-4 radius-4 fw-medium text-sm">Inactive</span> 
-                          </td>
-                          <td class="text-center"> 
-                            <div class="d-flex align-items-center gap-10 justify-content-center">
-                                <button type="button" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"> 
-                                    <iconify-icon icon="majesticons:eye-line" class="icon text-xl"></iconify-icon>
-                                </button>
-                                <button type="button" class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"> 
-                                    <iconify-icon icon="lucide:edit" class="menu-icon"></iconify-icon>
-                                </button>
-                                <button type="button" class="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"> 
-                                    <iconify-icon icon="fluent:delete-24-regular" class="menu-icon"></iconify-icon>
-                                </button>
-                            </div>
-                          </td>
-                        </tr>
+                            <select class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" name="status">
+                                <option value="">All Status</option>
+                                <option value="1" ${param.status == '1' ? 'selected' : ''}>Active</option>
+                                <option value="0" ${param.status == '0' ? 'selected' : ''}>Inactive</option>
+                            </select>
 
-                        <tr>
-                            <td>
-                                <div class="d-flex align-items-center gap-10">
-                                    <div class="form-check style-check d-flex align-items-center">
-                                        <input class="form-check-input radius-4 border border-neutral-400" type="checkbox" name="checkbox">
-                                    </div>
-                                    06
-                                </div>
-                            </td>
-                            <td>15 March 2024</td>
-                          <td>
-                            <div class="d-flex align-items-center">
-                              <img src="${pageContext.request.contextPath}/assets/admin/images/user-list/user-list6.png" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                              <div class="flex-grow-1">
-                                <span class="text-md mb-0 fw-normal text-secondary-light">Albert Flores</span>
-                              </div>
-                            </div>
-                          </td>
-                          <td><span class="text-md mb-0 fw-normal text-secondary-light">warn@mail.ru</span></td>
-                          <td>Design</td>
-                          <td>UI UX Designer</td>
-                          <td class="text-center">
-                            <span class="bg-success-focus text-success-600 border border-success-main px-24 py-4 radius-4 fw-medium text-sm">Active</span>
-                          </td>
-                          <td class="text-center"> 
-                            <div class="d-flex align-items-center gap-10 justify-content-center">
-                                <button type="button" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"> 
-                                    <iconify-icon icon="majesticons:eye-line" class="icon text-xl"></iconify-icon>
-                                </button>
-                                <button type="button" class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"> 
-                                    <iconify-icon icon="lucide:edit" class="menu-icon"></iconify-icon>
-                                </button>
-                                <button type="button" class="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"> 
-                                    <iconify-icon icon="fluent:delete-24-regular" class="menu-icon"></iconify-icon>
-                                </button>
-                            </div>
-                          </td>
-                        </tr>
+                            <select class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" name="role">
+                                <option value="">All Role</option>
+                                <option value="2" ${param.role == '2' ? 'selected' : ''}>Sale</option>
+                                <option value="3" ${param.role == '3' ? 'selected' : ''}>Marketing</option>
+                                <option value="4" ${param.role == '4' ? 'selected' : ''}>User</option>
+                                <option value="5" ${param.role == '5' ? 'selected' : ''}>Sale Manager</option>
+                                <option value="6" ${param.role == '6' ? 'selected' : ''}>Staff</option>
+                            </select>
 
-                        <tr>
-                            <td>
-                                <div class="d-flex align-items-center gap-10">
-                                    <div class="form-check style-check d-flex align-items-center">
-                                        <input class="form-check-input radius-4 border border-neutral-400" type="checkbox" name="checkbox">
-                                    </div>
-                                    07
-                                </div>
-                            </td>
-                            <td>27 April 2024</td>
-                          <td>
-                            <div class="d-flex align-items-center">
-                              <img src="${pageContext.request.contextPath}/assets/admin/images/user-list/user-list7.png" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                              <div class="flex-grow-1">
-                                <span class="text-md mb-0 fw-normal text-secondary-light">Jacob Jones</span>
-                              </div>
-                            </div>
-                          </td>
-                          <td><span class="text-md mb-0 fw-normal text-secondary-light">zitka@mail.ru</span></td>
-                          <td>Development</td>
-                          <td>Frontend developer</td>
-                          <td class="text-center">
-                            <span class="bg-success-focus text-success-600 border border-success-main px-24 py-4 radius-4 fw-medium text-sm">Active</span>
-                          </td>
-                          <td class="text-center"> 
-                            <div class="d-flex align-items-center gap-10 justify-content-center">
-                                <button type="button" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"> 
-                                    <iconify-icon icon="majesticons:eye-line" class="icon text-xl"></iconify-icon>
-                                </button>
-                                <button type="button" class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"> 
-                                    <iconify-icon icon="lucide:edit" class="menu-icon"></iconify-icon>
-                                </button>
-                                <button type="button" class="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"> 
-                                    <iconify-icon icon="fluent:delete-24-regular" class="menu-icon"></iconify-icon>
-                                </button>
-                            </div>
-                          </td>
-                        </tr>
+                            <select class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" name="sex">
+                                <option value="">All Sex</option>
+                                <option value="1" ${param.sex == '1' ? 'selected' : ''}>Male</option>
+                                <option value="0" ${param.sex == '0' ? 'selected' : ''}>Female</option>
+                            </select>
 
-                        <tr>
-                            <td>
-                                <div class="d-flex align-items-center gap-10">
-                                    <div class="form-check style-check d-flex align-items-center">
-                                        <input class="form-check-input radius-4 border border-neutral-400" type="checkbox" name="checkbox">
-                                    </div>
-                                    08
-                                </div>
-                            </td>
-                            <td>25 Jan 2024</td>
-                          <td>
-                            <div class="d-flex align-items-center">
-                              <img src="${pageContext.request.contextPath}/assets/admin/images/user-list/user-list8.png" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                              <div class="flex-grow-1">
-                                <span class="text-md mb-0 fw-normal text-secondary-light">Jerome Bell</span>
-                              </div>
-                            </div>
-                          </td>
-                          <td><span class="text-md mb-0 fw-normal text-secondary-light">igerrin@gmail.com</span></td>
-                          <td>Development</td>
-                          <td>Frontend developer</td>
-                          <td class="text-center">
-                            <span class="bg-neutral-200 text-neutral-600 border border-neutral-400 px-24 py-4 radius-4 fw-medium text-sm">Inactive</span> 
-                          </td>
-                          <td class="text-center"> 
-                            <div class="d-flex align-items-center gap-10 justify-content-center">
-                                <button type="button" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"> 
-                                    <iconify-icon icon="majesticons:eye-line" class="icon text-xl"></iconify-icon>
-                                </button>
-                                <button type="button" class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"> 
-                                    <iconify-icon icon="lucide:edit" class="menu-icon"></iconify-icon>
-                                </button>
-                                <button type="button" class="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"> 
-                                    <iconify-icon icon="fluent:delete-24-regular" class="menu-icon"></iconify-icon>
-                                </button>
-                            </div>
-                          </td>
-                        </tr>
+                            <button type="submit" class="btn btn-primary h-40-px radius-12">Search</button>
+                        </form>    
+                    </div>
 
-                        <tr>
-                            <td>
-                                <div class="d-flex align-items-center gap-10">
-                                    <div class="form-check style-check d-flex align-items-center">
-                                        <input class="form-check-input radius-4 border border-neutral-400" type="checkbox" name="checkbox">
-                                    </div>
-                                    09
-                                </div>
-                            </td>
-                            <td>30 April 2024</td>
-                          <td>
-                            <div class="d-flex align-items-center">
-                              <img src="${pageContext.request.contextPath}/assets/admin/images/user-list/user-list2.png" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                              <div class="flex-grow-1">
-                                <span class="text-md mb-0 fw-normal text-secondary-light">Marvin McKinney</span>
-                              </div>
-                            </div>
-                          </td>
-                          <td><span class="text-md mb-0 fw-normal text-secondary-light">maka@yandex.ru</span></td>
-                          <td>Development</td>
-                          <td>Frontend developer</td>
-                          <td class="text-center">
-                            <span class="bg-success-focus text-success-600 border border-success-main px-24 py-4 radius-4 fw-medium text-sm">Active</span>
-                          </td>
-                          <td class="text-center"> 
-                            <div class="d-flex align-items-center gap-10 justify-content-center">
-                                <button type="button" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"> 
-                                    <iconify-icon icon="majesticons:eye-line" class="icon text-xl"></iconify-icon>
-                                </button>
-                                <button type="button" class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"> 
-                                    <iconify-icon icon="lucide:edit" class="menu-icon"></iconify-icon>
-                                </button>
-                                <button type="button" class="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"> 
-                                    <iconify-icon icon="fluent:delete-24-regular" class="menu-icon"></iconify-icon>
-                                </button>
-                            </div>
-                          </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <div class="d-flex align-items-center gap-10">
-                                    <div class="form-check style-check d-flex align-items-center">
-                                        <input class="form-check-input radius-4 border border-neutral-400" type="checkbox" name="checkbox">
-                                    </div>
-                                    10
-                                </div>
-                            </td>
-                            <td>30 April 2024</td>
-                          <td>
-                            <div class="d-flex align-items-center">
-                              <img src="${pageContext.request.contextPath}/assets/admin/images/user-list/user-list10.png" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                              <div class="flex-grow-1">
-                                <span class="text-md mb-0 fw-normal text-secondary-light">Cameron Williamson</span>
-                              </div>
-                            </div>
-                          </td>
-                          <td><span class="text-md mb-0 fw-normal text-secondary-light">danten@mail.ru</span></td>
-                          <td>Development</td>
-                          <td>Frontend developer</td>
-                          <td class="text-center">
-                            <span class="bg-success-focus text-success-600 border border-success-main px-24 py-4 radius-4 fw-medium text-sm">Active</span>
-                          </td>
-                          <td class="text-center"> 
-                            <div class="d-flex align-items-center gap-10 justify-content-center">
-                                <button type="button" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"> 
-                                    <iconify-icon icon="majesticons:eye-line" class="icon text-xl"></iconify-icon>
-                                </button>
-                                <button type="button" class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"> 
-                                    <iconify-icon icon="lucide:edit" class="menu-icon"></iconify-icon>
-                                </button>
-                                <button type="button" class="remove-item-btn bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"> 
-                                    <iconify-icon icon="fluent:delete-24-regular" class="menu-icon"></iconify-icon>
-                                </button>
-                            </div>
-                          </td>
-                        </tr>   
-                      </tbody>
-                    </table>
+                    <a href="${pageContext.request.contextPath}/manage-users?action=addform" class="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2"> 
+                        <iconify-icon icon="ic:baseline-plus" class="icon text-xl line-height-1"></iconify-icon>
+                        Add New User
+                    </a>
                 </div>
+                <div class="card-body p-24">
+                    <div class="table-responsive scroll-sm">
+                        <table class="table bordered-table sm-table mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Id</th>   
+                                    <th scope="col">FullName</th>
+                                    <th scope="col">Email</th>                                       
+                                    <th scope="col">BirthDate</th>
+                                    <th scope="col">Sex</th>
+                                    <th scope="col">Role</th>
+                                    <th scope="col">Phone</th>
+                                    <th scope="col" class="text-center">Status</th>
+                                    <th scope="col" class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:forEach var="user" items="${users}">
+                                    <tr>
+                                        <td>${user.id}</td>   
+                                        <td>${user.firstName} ${user.lastName}</td>
+                                        <td>${user.email}</td>
+                                        <td>${user.dob}</td>
+                                        <td>${user.sex ? 'Male' : 'Female'}</td>
+                                        <td>${user.roleId == 2 ? 'Sale' 
+                                              : user.roleId == 3 ? 'Marketing' 
+                                              : user.roleId == 4 ? 'User'
+                                              : user.roleId == 5 ? 'Sale Manager' 
+                                              : "Staff"}</td>
+                                        <td>${user.phone}</td>
+                                        <td>${user.active ? 'Active' : 'InActive'}</td>
+                                        <td class="text-center"> 
+                                            <div class="d-flex align-items-center gap-10 justify-content-center">
+                                                <button type="button" class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
+                                                        onclick="window.location.href = '${pageContext.request.contextPath}/manage-users?action=details&id=${user.id}'"> 
+                                                    <iconify-icon icon="lucide:edit" class="menu-icon"></iconify-icon>
+                                                </button>
+                                                <button type="button" class="bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
+                                                        onclick="confirmDeactivate(${user.id})"> 
+                                                    <iconify-icon icon="fluent:delete-24-regular" class="menu-icon"></iconify-icon>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </tbody>
+                        </table>
+                    </div>
 
-                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mt-24">
-                    <span>Showing 1 to 10 of 12 entries</span>
-                    <ul class="pagination d-flex flex-wrap align-items-center gap-2 justify-content-center">
-                        <li class="page-item">
-                            <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="javascript:void(0)"><iconify-icon icon="ep:d-arrow-left" class=""></iconify-icon></a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md bg-primary-600 text-white" href="javascript:void(0)">1</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px" href="javascript:void(0)">2</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="javascript:void(0)">3</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="javascript:void(0)">4</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="javascript:void(0)">5</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" href="javascript:void(0)"> <iconify-icon icon="ep:d-arrow-right" class=""></iconify-icon> </a>
-                        </li>
-                    </ul>
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mt-24">
+                        <ul class="pagination d-flex flex-wrap align-items-center gap-2 justify-content-center">
+                            <c:if test="${currentPage > 1}">
+                                <li class="page-item">
+                                    <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" 
+                                       href="${paginationUrl}&page=${currentPage - 1}"><iconify-icon icon="ep:d-arrow-left" class=""></iconify-icon>
+                                    </a>
+                                </li>
+                            </c:if> 
+                            <c:forEach begin="1" end="${totalpages}" var="i">
+                                <li class="page-item">
+                                    <a class="page-link bg-neutral-200 text-secondary-emphasis fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px" 
+                                       href="${paginationUrl}&page=${i}">${i}
+                                    </a>
+                                </li>
+                            </c:forEach>
+                            <c:if test="${currentPage < totalpages}">                               
+                                <li class="page-item">
+                                    <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px text-md" 
+                                       href="${paginationUrl}&page=${currentPage + 1}"><iconify-icon icon="ep:d-arrow-right" class=""></iconify-icon>
+                                    </a>
+                                </li>
+                            </c:if>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-  
-    <footer class="d-footer">
-  <div class="row align-items-center justify-content-between">
-    <div class="col-auto">
-      <p class="mb-0">© 2024 WowDash. All Rights Reserved.</p>
-    </div>
-    <div class="col-auto">
-      <p class="mb-0">Made by <span class="text-primary-600">wowtheme7</span></p>
-    </div>
-  </div>
-</footer>
-  </main>
-  <!-- JS here -->
-  <jsp:include page="../../common/dashboard/js-dashboard.jsp"></jsp:include>
+        <!-- JS here -->
+        <jsp:include page="../../common/dashboard/js-dashboard.jsp"></jsp:include>
+
+            <script>
+                function confirmDeactivate(userId) {
+                    if (confirm('Are you sure you want to deactivate this account?')) {
+                        window.location.href = '${pageContext.request.contextPath}/manage-users?action=deactivate&id=' + userId;
+                    }
+                }
+        </script>
+
+
+    </main>
+
 </body>
 
 <!-- Mirrored from wowdash.wowtheme7.com/demo/users-list.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 03 Feb 2025 04:44:16 GMT -->

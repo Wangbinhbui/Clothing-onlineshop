@@ -33,7 +33,7 @@ public class BlogDAO extends DBContext implements I_DAO<Blog> {
         }
         return blogs;
     }
-    
+
     @Override
     public boolean update(Blog blog) {
         String sql = "UPDATE blog SET title = ?, thumbnail = ?, brief_info = ?, content = ?, category_id = ?, author = ?, status = ? WHERE id = ?";
@@ -135,25 +135,5 @@ public class BlogDAO extends DBContext implements I_DAO<Blog> {
         }
         return null;
     }
-    
-    public List<Blog> findByCategory(int categoryId) {
-    List<Blog> blogs = new ArrayList<>();
-    String sql = "SELECT * FROM blog WHERE category_id = ?";
-    try {
-        connection = getConnection();
-        statement = connection.prepareStatement(sql);
-        statement.setInt(1, categoryId);
-        resultSet = statement.executeQuery();
-        while(resultSet.next()){
-            blogs.add(getFromResultSet(resultSet));
-        }
-    } catch (SQLException e) {
-        Logger.getLogger(BlogDAO.class.getName()).log(Level.SEVERE, null, e);
-    } finally {
-        closeResources();
-    }
-    return blogs;
-}
-
 }
 

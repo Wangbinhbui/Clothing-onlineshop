@@ -17,25 +17,25 @@ public class GlobalConfig {
     /**
      * USERNAME_EMAIL: Địa chỉ email được sử dụng để gửi email từ ứng dụng
      */
-    public static final String USERNAME_EMAIL = "";
+    public static final String USERNAME_EMAIL = "isp1804cardweb3@gmail.com";
 
     /**
      * PASSWORD_APP_EMAIL: Mật khẩu của địa chỉ email được sử dụng để gửi email từ
      * ứng dụng
      */
-    public static final String PASSWORD_APP_EMAIL = "";
+    public static final String PASSWORD_APP_EMAIL = "pchn xlef opnr bhca";
 
     /**
      * GOOGLE_CLIENT_ID: ID của ứng dụng khách (client) được cấp bởi Google để xác
      * thực
      */
-    public static String GOOGLE_CLIENT_ID = "";
+    public static String GOOGLE_CLIENT_ID = "257748132214-9811944a5anccchj9egqhg9qci33l5ij.apps.googleusercontent.com";
 
     /**
      * GOOGLE_CLIENT_SECRET: Khóa bí mật của ứng dụng khách được cấp bởi Google để
      * xác thực
      */
-    public static String GOOGLE_CLIENT_SECRET = "";
+    public static String GOOGLE_CLIENT_SECRET = "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";
 
     /**
      * GOOGLE_REDIRECT_URI: URI được sử dụng để đổi mã xác thực (authorization code)
@@ -63,7 +63,7 @@ public class GlobalConfig {
 
 
     public static final Integer ROLE_STUDENT = 3;
-
+    public static final Integer ROLE_CUSTOMER = 4;
     public static final Integer ROLE_ADMIN = 1;
 
     public static final Integer ROLE_TEACHER = 2;
