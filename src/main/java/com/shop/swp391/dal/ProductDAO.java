@@ -1,5 +1,8 @@
-
-package com.shop.swp391.dal; 
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.shop.swp391.dal;
 
 import com.shop.swp391.entity.Color;
 import com.shop.swp391.entity.Product;
@@ -301,5 +304,4 @@ public class ProductDAO extends DBContext implements I_DAO<Product> {
             System.out.println("ID: " + size.getSizeID() + ", Name: " + size.getSizeName());
         }
     }
-    
 }

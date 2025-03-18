@@ -106,11 +106,15 @@ public class ManagerStoryController extends HttpServlet {
         int totalStories = storyDAO.getTotalStories(searchFilter, statusFilter);
         int totalPages = (int) Math.ceil((double) totalStories / pageSize);
 
-       
+        List<User> users = userDAO.findAll();
+        Map<Integer, User> userMap = users.stream()
+                .collect(Collectors.toMap(User::getId, item -> item));
+
         request.setAttribute("stories", stories);
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);
         request.setAttribute("totalStories", totalStories);
+        request.setAttribute("userMap", userMap);
         request.setAttribute("statusFilter", statusFilter);
         request.setAttribute("searchFilter", searchFilter);
 
@@ -161,9 +165,9 @@ public class ManagerStoryController extends HttpServlet {
             String uploadPath = request.getServletContext().getRealPath("") + "assets/images/story";
             File uploadDir = new File(uploadPath);
             if (!uploadDir.exists()) {
-                uploadDir.mkdirs();// tao thu muc con chua thumbnail
+                uploadDir.mkdirs();
             }
-            filePart.write(uploadPath + File.separator + fileName);// save file
+            filePart.write(uploadPath + File.separator + fileName);
         }
 
         Story story = Story.builder()
@@ -208,8 +212,8 @@ public class ManagerStoryController extends HttpServlet {
         Part filePart = request.getPart("thumbnail");
         if (filePart != null && filePart.getSize() > 0) {
             if (story.getThumbnail() != null && !story.getThumbnail().isEmpty()) {
-                String oldThumbnailPath = request.getServletContext().getRealPath("") + story.getThumbnail();// get old thumbnail
-                File oldThumbnail = new File(oldThumbnailPath); // create object old thumbnail
+                String oldThumbnailPath = request.getServletContext().getRealPath("") + story.getThumbnail();
+                File oldThumbnail = new File(oldThumbnailPath);
                 if (oldThumbnail.exists()) {
                     oldThumbnail.delete();
                 }
