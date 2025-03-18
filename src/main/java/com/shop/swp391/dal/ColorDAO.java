@@ -55,4 +55,22 @@ public class ColorDAO extends DBContext implements I_DAO<Color>{
             rs.getString("color_Name")
         );
     }
+    
+    public Color findById(int colorId) {
+        String sql = "SELECT * FROM color WHERE color_ID = ?";
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, colorId);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return getFromResultSet(resultSet);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+        return null;
+    }
 }

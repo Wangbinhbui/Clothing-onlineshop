@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.Statement;
 
 /**
  *
@@ -29,23 +30,79 @@ public class ProductImgDAO extends DBContext implements I_DAO<ProductImg> {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            closeResources();
         }
         return productImgs;
     }
 
     @Override
     public boolean update(ProductImg t) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        String sql = "UPDATE product_img SET thumbnail = ?, product_img_1 = ?, product_img_2 = ?, product_img_3 = ?, product_img_name = ? WHERE product_img_ID = ?";
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql);
+            statement.setString(1, t.getThumbnail());
+            statement.setString(2, t.getProductImg1());
+            statement.setString(3, t.getProductImg2());
+            statement.setString(4, t.getProductImg3());
+            statement.setString(5, t.getProductImgName());
+            statement.setInt(6, t.getProductImgID());
+            int affectedRows = statement.executeUpdate();
+            return affectedRows > 0;
+        } catch (SQLException ex) {
+            System.out.println("Error updating ProductImg: " + ex.getMessage());
+            return false;
+        } finally {
+            closeResources();
+        }
     }
 
     @Override
     public boolean delete(ProductImg t) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        String sql = "DELETE FROM product_img WHERE product_img_ID = ?";
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, t.getProductImgID());
+            int affectedRows = statement.executeUpdate();
+            return affectedRows > 0;
+        } catch (SQLException ex) {
+            System.out.println("Error deleting ProductImg: " + ex.getMessage());
+            return false;
+        } finally {
+            closeResources();
+        }
     }
 
     @Override
     public int insert(ProductImg t) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        String sql = "INSERT INTO product_img (thumbnail, product_img_1, product_img_2, product_img_3, product_img_name) VALUES (?, ?, ?, ?, ?)";
+        try {
+            connection = getConnection();
+            // Sử dụng Statement.RETURN_GENERATED_KEYS để lấy id tự tăng
+            statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            statement.setString(1, t.getThumbnail());
+            statement.setString(2, t.getProductImg1());
+            statement.setString(3, t.getProductImg2());
+            statement.setString(4, t.getProductImg3());
+            statement.setString(5, t.getProductImgName());
+            int affectedRows = statement.executeUpdate();
+            if (affectedRows == 0) {
+                throw new SQLException("Creating ProductImg failed, no rows affected.");
+            }
+            resultSet = statement.getGeneratedKeys();
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            } else {
+                throw new SQLException("Creating ProductImg failed, no ID obtained.");
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error inserting ProductImg: " + ex.getMessage());
+            return -1;
+        } finally {
+            closeResources();
+        }
     }
 
     @Override
@@ -74,6 +131,8 @@ public class ProductImgDAO extends DBContext implements I_DAO<ProductImg> {
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
+        } finally {
+            closeResources();
         }
         return "assets/home/images/product/default.jpg";
     }
@@ -81,11 +140,10 @@ public class ProductImgDAO extends DBContext implements I_DAO<ProductImg> {
     public static void main(String[] args) {
         ProductImgDAO productImgDAO = new ProductImgDAO();
         int testProductId = 15;
-        for(int i=0;i<72;i++){
-        String imagePath = productImgDAO.getProductThumbnail(i);
-        System.out.println("Image path for ProductImgID " + testProductId + ": " + imagePath);
+        for (int i = 0; i < 72; i++) {
+            String imagePath = productImgDAO.getProductThumbnail(i);
+            System.out.println("Image path for ProductImgID " + testProductId + ": " + imagePath);
         }
-       // System.out.println("Image path for ProductImgID " + testProductId + ": " + imagePath);
     }
 
 }
