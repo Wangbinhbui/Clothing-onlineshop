@@ -248,4 +248,51 @@ public class ProductDAO extends DBContext implements I_DAO<Product> {
         return products;
     }
 
+    public int getTotalFilteredProducts(Integer categoryId, Integer collectionId, Double minPrice, Double maxPrice) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM product WHERE 1=1");
+        List<Object> params = new ArrayList<>();
+        
+        if (categoryId != null) {
+            sql.append(" AND CategoryID = ?");
+            params.add(categoryId);
+        }
+        
+        if (collectionId != null) {
+            sql.append(" AND CollectionID = ?");
+            params.add(collectionId);
+        }
+        
+        if (minPrice != null) {
+            sql.append(" AND Price >= ?");
+            params.add(minPrice);
+        }
+        
+        if (maxPrice != null) {
+            sql.append(" AND Price <= ?");
+            params.add(maxPrice);
+        }
+        
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql.toString());
+            
+            for (int i = 0; i < params.size(); i++) {
+                statement.setObject(i + 1, params.get(i));
+            }
+            
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+        
+        return 0;
     }
+
+   
+
+}
