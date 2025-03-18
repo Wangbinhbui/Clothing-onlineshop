@@ -17,17 +17,21 @@
         <jsp:include page="../../common/dashboard/css-dashboard.jsp"></jsp:include>
             <style>
                 .description-column {
-                    max-width: 300px;
-                    max-height: 300px;
-                    min-height: 250px;
-                    min-width: 300px;
-                    overflow-y: auto;  /* Hiển thị thanh cuộn dọc khi nội dung dài */
-                    overflow-x: hidden; /* Ẩn thanh cuộn ngang */
-                    white-space: normal;
-                    word-wrap: break-word; /* Đảm bảo xuống dòng */
-                    padding: 10px;
-                    background: #fff; /* Giữ nền trắng */
-                }
+                max-width: 100%; /* Chiều rộng tối đa */
+                max-height: 200px; /* Chiều cao tối đa */
+                min-height: 150px; /* Đảm bảo chiều cao tối thiểu để ô luôn đủ lớn */
+                display: flex;
+                overflow: hidden; /* Ẩn phần nội dung vượt quá */
+                display: -webkit-box;
+                -webkit-line-clamp: 3; /* Giới hạn tối đa 3 dòng */
+                -webkit-box-orient: vertical;
+                overflow-y: auto;  /* Hiển thị thanh cuộn dọc khi nội dung dài */
+                overflow-x: hidden; /* Ẩn thanh cuộn ngang */
+                white-space: normal;
+                cursor: pointer; /* Hiển thị con trỏ khi di chuột vào */
+                padding: 10px; /* Giúp ô trông cân đối */
+                word-wrap: break-word; /* Đảm bảo xuống dòng */
+            }
             </style>
         </head>
 
@@ -47,7 +51,7 @@
         <!--Sidebar-->
         <jsp:include page="../../common/dashboard/sidebar-dashboard.jsp"></jsp:include>
             <main class="dashboard-main">
-            <!--header-->
+                <!--header-->
             <jsp:include page="../../common/dashboard/header-dashboard.jsp"></jsp:include>
                 <div class="dashboard-main-body">
                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
@@ -116,8 +120,8 @@
                                                 <th style="width: 10%;">Image</th>
                                                 <th style="width: 15%;">Title</th>
                                                 <th style="width: 20%;">Backlink</th>
-                                                <th style="width: 10%;">Status</th>
-                                                <th style="width: 25%;">Description</th>
+                                                <th style="width: 20%;">Status</th>
+                                                <th style="width: 30%;">Description</th>
 
                                                 <th style="width: 10%; text-align: center;">Action</th>
                                             </tr>
@@ -147,25 +151,22 @@
                                                     ${story.description}
                                                 </td>
                                                 <td>
-                                                    <div class="dashboard__review-action">
+                                                    <div class="dashboard__review-action d-flex align-items-center gap-2">
                                                         <!-- Nút Edit -->
-                                                        <a  href="${pageContext.request.contextPath}/manage-story?action=edit&id=${story.storyId}"
-                                                            title="Edit">
+                                                        <a href="${pageContext.request.contextPath}/manage-story?action=edit&id=${story.storyId}" title="Edit">
                                                             <i class="ri-edit-line fs-3"></i>
-
                                                         </a>
                                                         <!-- Nút Deactivate -->
-                                                        <a href="javascript:void(0);" onclick="confirmDeactivate(${story.storyId})" 
-                                                           title="Deactivate">
-                                                            <i class="ri-close-circle-line text-danger fs-3"></i> <!-- Đường viền -->
-
+                                                        <a href="javascript:void(0);" onclick="confirmDeactivate(${story.storyId})" title="Deactivate">
+                                                            <i class="ri-close-circle-line text-danger fs-3"></i>
                                                         </a>
-                                                        <a href="${pageContext.request.contextPath}/manage-story?action=delete&id=${story.storyId}" 
-                                                           title="Delete">
-                                                            <i class="ri-delete-bin-line fs-3" style="color: red;"></i>
+                                                        <!-- Nút Delete -->
+                                                        <a href="${pageContext.request.contextPath}/manage-story?action=delete&id=${story.storyId}" title="Delete">
+                                                            <i class="ri-delete-bin-line fs-3 text-danger"></i>
                                                         </a>
                                                     </div>
                                                 </td>
+
                                             </tr>
                                         </c:forEach>
 

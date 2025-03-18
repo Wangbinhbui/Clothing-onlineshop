@@ -63,7 +63,7 @@ public class GlobalConfig {
 
 
     public static final Integer ROLE_STUDENT = 3;
-
+    public static final Integer ROLE_CUSTOMER = 4;
     public static final Integer ROLE_ADMIN = 1;
 
     public static final Integer ROLE_TEACHER = 2;
