@@ -10,10 +10,9 @@ import lombok.*;
 @Getter
 @Setter
 public class CartItem {
-    private int cartItemId;
-    private int cartId;
-    private int productId;
-    private int quantity;
-    private int variationId;
-    private Product product;
+    private Integer cartItemId;
+    private Integer cartId;
+    private Integer productId;
+    private Integer quantity;
+    private Integer variationId;
 }

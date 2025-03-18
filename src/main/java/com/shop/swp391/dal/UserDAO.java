@@ -4,13 +4,17 @@
  */
 package com.shop.swp391.dal;
 
+import com.shop.swp391.dal.I_DAO;
 import com.shop.swp391.config.GlobalConfig;
 import com.shop.swp391.entity.User;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -49,8 +53,8 @@ public class UserDAO extends DBContext implements I_DAO<User> {
                 + "`Dob` = ?,\n"
                 + "`Sex` = ?,\n"
                 + "`Role` = ?,\n"
-                + "`Phone` = ?\n"
-                // + "`IsActive` = ?\n"
+                + "`Phone` = ?,\n"
+                + "`IsActive` = ?\n"
                 + "WHERE `UserID` = ?";
         try {
             connection = getConnection();
@@ -64,8 +68,8 @@ public class UserDAO extends DBContext implements I_DAO<User> {
             statement.setBoolean(7, user.isSex());
             statement.setInt(8, user.getRoleId());
             statement.setString(9, user.getPhone());
-            // statement.setBoolean(10, user.isActive());
-            statement.setInt(10, user.getId());
+            statement.setBoolean(10, user.isActive());
+            statement.setInt(11, user.getId());
 
             int affectedRows = statement.executeUpdate();
             return affectedRows > 0;
@@ -80,24 +84,23 @@ public class UserDAO extends DBContext implements I_DAO<User> {
 
     @Override
     public boolean delete(User t) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
     public int insert(User user) {
         String sql = "INSERT INTO `SWP391_FASHION_SHOP`.`user` ("
-                + "`UserName`, "
-                + "`Password`, "
-                + "`Email`, "
-                + "`FirstName`, "
-                + "`LastName`, "
-                + "`Dob`, "
-                + "`Sex`, "
-                + "`Role`, "
-                + "`Phone`) "
-                // + "`IsActive`) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+            + "`UserName`, "
+            + "`Password`, "
+            + "`Email`, "
+            + "`FirstName`, "
+            + "`LastName`, "
+            + "`Dob`, "
+            + "`Sex`, "
+            + "`Role`, "
+            + "`Phone`, "
+            + "`IsActive`) "
+            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
         try {
             connection = getConnection();
             statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -110,14 +113,14 @@ public class UserDAO extends DBContext implements I_DAO<User> {
             statement.setBoolean(7, user.isSex());
             statement.setInt(8, user.getRoleId());
             statement.setString(9, user.getPhone());
-            // statement.setBoolean(10, user.isActive());
-
+            statement.setBoolean(10, user.isActive());
+            
             int affectedRows = statement.executeUpdate();
-
+            
             if (affectedRows == 0) {
                 throw new SQLException("Creating account failed, no rows affected.");
             }
-
+            
             resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
                 return resultSet.getInt(1);
@@ -344,11 +347,8 @@ public class UserDAO extends DBContext implements I_DAO<User> {
         user.setSex(rs.getBoolean("Sex"));
         user.setRoleId(rs.getInt("Role"));
         user.setPhone(rs.getString("Phone"));
-        //user.setActive(rs.getBoolean("IsActive")); //chua co
+        user.setActive(rs.getBoolean("IsActive"));
         return user;
     }
 
 }
-
-
-

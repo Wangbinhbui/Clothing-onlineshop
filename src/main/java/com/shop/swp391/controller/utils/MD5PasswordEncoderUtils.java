@@ -41,5 +41,3 @@ public class MD5PasswordEncoderUtils {
         System.out.println("Encoded password: " + encodedPassword);
     }
 }
-
-

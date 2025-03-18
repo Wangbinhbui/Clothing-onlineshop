@@ -192,6 +192,3 @@ public class ProfileController extends HttpServlet {
         request.getRequestDispatcher(CHANGE_PASSWORD_JSP).forward(request, response);
     }
 }
-
-
-

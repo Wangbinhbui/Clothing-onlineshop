@@ -1,7 +1,6 @@
 package com.shop.swp391.dal;
 
 import com.shop.swp391.entity.Story;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -55,24 +54,25 @@ public class StoryDAO extends DBContext implements I_DAO<Story> {
 
     @Override
     public boolean delete(Story story) {
-        String sql = "DELETE FROM story WHERE story_id = ?";
-        try {
-            connection = getConnection();
-            statement = connection.prepareStatement(sql);
-            statement.setInt(1, story.getStoryId());
+    String sql = "DELETE FROM story WHERE story_id = ?";
+    try {
+        connection = getConnection();
+        statement = connection.prepareStatement(sql);
+        statement.setInt(1, story.getStoryId());
 
-            int affectedRows = statement.executeUpdate();
-            System.out.println("Delete Query: " + sql + " with story_id=" + story.getStoryId());
-            System.out.println("Rows affected: " + affectedRows);
-
-            return affectedRows > 0;
-        } catch (SQLException ex) {
-            System.out.println("Error deleting story: " + ex.getMessage());
-            return false;
-        } finally {
-            closeResources();
-        }
+        int affectedRows = statement.executeUpdate();
+        System.out.println("Delete Query: " + sql + " with story_id=" + story.getStoryId());
+        System.out.println("Rows affected: " + affectedRows);
+        
+        return affectedRows > 0;
+    } catch (SQLException ex) {
+        System.out.println("Error deleting story: " + ex.getMessage());
+        return false;
+    } finally {
+        closeResources();
     }
+}
+
 
     @Override
     public int insert(Story story) {
@@ -107,7 +107,6 @@ public class StoryDAO extends DBContext implements I_DAO<Story> {
     }
 
     @Override
-    // cjuyen 1 dong ket qua thanh doi tuong story
     public Story getFromResultSet(ResultSet rs) throws SQLException {
         return Story.builder()
                 .storyId(rs.getInt("story_id"))
@@ -238,41 +237,4 @@ public class StoryDAO extends DBContext implements I_DAO<Story> {
         }
         return 0;
     }
-
-    public List<Story> getLatestActiveStories() {
-        List<Story> stories = new ArrayList<>();
-        String sql = "SELECT * FROM story WHERE status = 'Active' ORDER BY story_id DESC LIMIT 3";
-
-        try {
-            connection = getConnection();
-            statement = connection.prepareStatement(sql);
-            resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                stories.add(getFromResultSet(resultSet));
-            }
-        } catch (SQLException ex) {
-            System.out.println("Error finding stories: " + ex.getMessage());
-        } finally {
-            closeResources();
-        }
-        return stories;
-    }
-    // update story status
-    public boolean updateStoryStatus(int storyId, String status) {
-        String sql = "UPDATE story SET status = ? WHERE story_id = ?";
-        try {
-            connection = getConnection();
-            statement = connection.prepareStatement(sql);
-            statement.setString(1, status);
-            statement.setInt(2, storyId);
-            int affectedRows = statement.executeUpdate();
-            return affectedRows > 0;
-        } catch (SQLException ex) {
-            System.out.println("Error updating story status: " + ex.getMessage());
-            return false;
-        } finally {
-            closeResources();
-        }
-    }
-
 }

@@ -19,7 +19,7 @@ public class HomeController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        request.getRequestDispatcher("view/homepage/homepage.jsp").forward(request, response);
+        request.getRequestDispatcher("view/dashboard/admin/setting-details.jsp").forward(request, response);
         //view/dashboard/admin/user-list.jsp || view/homepage/homepage.jsp
     } 
 

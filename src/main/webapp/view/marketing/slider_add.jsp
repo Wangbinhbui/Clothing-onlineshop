@@ -187,7 +187,7 @@
             });
             // Editor Js End
             quill.on('text-change', function () {
-                document.getElementById('description').value = quill.root.innerHTML;// get description html
+                document.getElementById('description').value = quill.root.innerHTML;
             });
 
             // ??m b?o n?i dung ???c c?p nh?t tr??c khi g?i form
