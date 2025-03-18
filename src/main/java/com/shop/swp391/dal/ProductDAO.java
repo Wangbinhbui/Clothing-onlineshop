@@ -341,7 +341,74 @@ public class ProductDAO extends DBContext implements I_DAO<Product> {
         return sizes;
     }
 
+    public List<Product> findPagedProducts(int page, int pageSize, String sortBy, Double minPrice, Double maxPrice, Integer colorID) {
+        List<Product> products = new ArrayList<>();
+        int offset = (page - 1) * pageSize;
+        StringBuilder sql = new StringBuilder("SELECT p.* FROM product p");
+        if (colorID != null) {
+            sql.append(" JOIN variation v ON p.ProductID = v.ProductID");
+        }
+        sql.append(" WHERE 1=1");
+        if (minPrice != null) {
+            sql.append(" AND p.Price >= ").append(minPrice);
+        }
+        if (maxPrice != null) {
+            sql.append(" AND p.Price <= ").append(maxPrice);
+        }
+        if (colorID != null) {
+            sql.append(" AND v.color_ID = ").append(colorID);
+        }
+        sql.append(" GROUP BY p.ProductID");
+        if (sortBy != null) {
+            switch (sortBy) {
+                case "name_asc":
+                    sql.append(" ORDER BY p.ProductName ASC");
+                    break;
+                case "name_desc":
+                    sql.append(" ORDER BY p.ProductName DESC");
+                    break;
+                case "price_asc":
+                    sql.append(" ORDER BY p.Price ASC");
+                    break;
+                case "price_desc":
+                    sql.append(" ORDER BY p.Price DESC");
+                    break;
+                default:
+                    break;
+            }
+        }
+        sql.append(" LIMIT ? OFFSET ?");
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql.toString());
+            statement.setDouble(1, minPrice != null ? minPrice : 0.0);
+            statement.setDouble(2, maxPrice != null ? maxPrice : 1000000.0);
+            statement.setInt(1, pageSize);
+            statement.setInt(2, offset);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                products.add(getFromResultSet(resultSet));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error fetching paged products", e);
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return products;
+    }
+
     
-
-
 }
