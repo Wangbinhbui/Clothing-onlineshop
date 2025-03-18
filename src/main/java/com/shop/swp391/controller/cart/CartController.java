@@ -190,5 +190,19 @@ public class CartController extends HttpServlet {
 
         resp.sendRedirect("cart?action=view");
     }
-   
+    
+    private void applyPromotion(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        HttpSession session = req.getSession();
+        String promotionCode = req.getParameter("promotionCode");
+
+        Promotion promotion = promotionDAO.findByPromotionCode(promotionCode);
+        if (promotion != null) {
+            session.setAttribute("promotion", promotion);
+        } else {
+            session.setAttribute("errorMessage", "Invalid promotion code.");
+        }
+
+        resp.sendRedirect("cart?action=view");
+    }
+    
 }
