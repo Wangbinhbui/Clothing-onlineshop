@@ -181,4 +181,14 @@ public class CartController extends HttpServlet {
         resp.sendRedirect("cart?action=view");
     }
     
+    private void removeCartItem(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        int cartItemId = Integer.parseInt(req.getParameter("cartItemId"));
+        CartItem item = cartItemDAO.findById(cartItemId);
+        if (item != null) {
+            cartItemDAO.delete(item);
+        }
+
+        resp.sendRedirect("cart?action=view");
+    }
+   
 }
