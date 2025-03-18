@@ -293,6 +293,30 @@ public class ProductDAO extends DBContext implements I_DAO<Product> {
         return 0;
     }
 
-   
+    public List<Color> getAvailableColors(int productId) {
+        List<Color> colors = new ArrayList<>();
+        String sql = "SELECT DISTINCT c.color_ID, c.color_name FROM variation v "
+                + "JOIN color c ON v.color_ID = c.color_ID "
+                + "WHERE v.ProductID = ?";
+
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, productId);
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                Color color = new Color(resultSet.getInt("color_ID"), resultSet.getString("color_name"));
+                colors.add(color);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+        return colors;
+    }
+
+    
 
 }
