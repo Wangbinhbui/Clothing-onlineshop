@@ -30,7 +30,6 @@ public class Product {
     private double price;
     private int collectionID;
     private String description;
+    private int status; // 1 - Active, 0 - Inactive
 
-
-    
 }
