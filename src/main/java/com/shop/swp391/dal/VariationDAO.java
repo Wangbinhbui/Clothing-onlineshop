@@ -11,6 +11,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 
 /**
  *
@@ -100,5 +102,70 @@ public class VariationDAO extends DBContext implements I_DAO<Variation> {
             e.printStackTrace();
         }
         return sizes;
+    }
+
+    public Variation findById(int variationId) {
+        Variation variation = null;
+        String sql = "SELECT * FROM Variation WHERE variationID = ?";
+        try {
+            connection = new DBContext().connection;
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, variationId);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                variation = new Variation(
+                    resultSet.getInt("variationID"),
+                    resultSet.getInt("ProductID"),
+                    resultSet.getInt("color_ID"),
+                    resultSet.getInt("size_ID"),
+                    resultSet.getInt("qty_in_stock"),
+                    resultSet.getInt("product_img_ID")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (statement != null) statement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return variation;
+    }
+
+    public Variation findByColorIdAndSizeId(int colorId, int sizeId) {
+        Variation variation = null;
+        String sql = "SELECT * FROM Variation WHERE color_ID = ? AND size_ID = ?";
+        try {
+            connection = new DBContext().connection;
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, colorId);
+            statement.setInt(2, sizeId);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                variation = new Variation(
+                    resultSet.getInt("variationID"),
+                    resultSet.getInt("ProductID"),
+                    resultSet.getInt("color_ID"),
+                    resultSet.getInt("size_ID"),
+                    resultSet.getInt("qty_in_stock"),
+                    resultSet.getInt("product_img_ID")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (statement != null) statement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return variation;
     }
 }

@@ -24,11 +24,11 @@ import lombok.ToString;
 @Getter
 @Setter
 public class Product {
-    private int productID;
-    private int categoryID;
+    private Integer productID;
+    private Integer categoryID;
     private String productName;
     private double price;
-    private int collectionID;
+    private Integer collectionID;
     private String description;
 
 
