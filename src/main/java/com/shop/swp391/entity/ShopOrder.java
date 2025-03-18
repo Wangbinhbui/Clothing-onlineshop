@@ -8,11 +8,11 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class ShopOrder {
-    private int shopOrderID;
-    private int userID;
-    private int addressID;
-    private int orderTotal;
-    private int orderStatus;
+    private Integer shopOrderID;
+    private Integer userID;
+    private Integer addressID;
+    private Integer orderTotal;
+    private Integer orderStatus;
     private String recipient;
     private String recipientPhone;
 }
