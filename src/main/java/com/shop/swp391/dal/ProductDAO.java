@@ -317,6 +317,31 @@ public class ProductDAO extends DBContext implements I_DAO<Product> {
         return colors;
     }
 
+    public List<Size> getAvailableSizes(int productId) {
+        List<Size> sizes = new ArrayList<>();
+        String sql = "SELECT DISTINCT s.size_ID, s.size_name FROM variation v "
+                + "JOIN size s ON v.size_ID = s.size_ID "
+                + "WHERE v.ProductID = ?";
+
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, productId);
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                Size size = new Size(resultSet.getInt("size_ID"), resultSet.getString("size_name"));
+                sizes.add(size);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+        return sizes;
+    }
+
     
+
 
 }
