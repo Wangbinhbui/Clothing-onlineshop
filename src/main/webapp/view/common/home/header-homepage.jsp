@@ -52,7 +52,7 @@
                             </li>
                             <li>
                                 <div class="header-cart">
-                                    <div class="cart-icon"> <a href="#">Cart<i
+                                    <div class="cart-icon"> <a href="${pageContext.request.contextPath}/cart">Cart<i
                                                 class="zmdi zmdi-shopping-cart"></i></a> <span>2</span> </div>
                                     <div class="cart-content-wraper">
                                         <div class="cart-single-wraper">
@@ -111,8 +111,8 @@
                             <ul class="main-menu">
                                 <li class="current"><a class="active" href="index.html">Home</a>
                                     <ul class="dropdown">
-                                        <li><a class="active" href="index.html">Home One</a></li>
-                                        <li><a href="index-2.html">Home Two</a></li>
+                                        <li><a class="active" href="${pageContext.request.contextPath}/products">Home One</a></li>
+                                        <li><a href="${pageContext.request.contextPath}/order-history">Home Two</a></li>
                                         <li><a href="index-boxed-01.html">Home Three (Boxed)</a></li>
                                         <li><a href="index-boxed-02.html">Home Four (Boxed)</a></li>
                                     </ul>
