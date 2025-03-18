@@ -70,6 +70,54 @@ public class ManageCustomerController extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    
+    private void listWithFilters(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String statusFilter = request.getParameter("status");
+        String searchFilter = request.getParameter("search");
+        String sexFilter = request.getParameter("sex");
+
+        int page = 1;
+        int pageSize = 10;
+        String pageStr = request.getParameter("page");
+        if (pageStr != null && !pageStr.isEmpty()) {
+            try {
+                page = Integer.parseInt(pageStr);
+                if (page < 1) {
+                    page = 1;
+                }
+            } catch (NumberFormatException e) {
+                page = 1;
+            }
+        }
+
+        UserDAO userDAO = new UserDAO();
+        List<User> users = userDAO.findCustomerWithFilters( sexFilter, statusFilter, searchFilter, page, pageSize);
+        int totalUsers = userDAO.getTotalFilteredCustomer(sexFilter, statusFilter, searchFilter);
+
+        int totalPages = (int) Math.ceil((double) totalUsers / pageSize);
+
+        request.setAttribute("users", users);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalpages", totalPages);
+        request.getRequestDispatcher("view/dashboard/admin/customer-list.jsp").forward(request, response);
+
+    }
+
+    public void showDetails(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String userIdStr = request.getParameter("id");
+        if (userIdStr != null && !userIdStr.isEmpty()) {
+            int userId = Integer.parseInt(userIdStr);
+            UserDAO userDAO = new UserDAO();
+            User user = userDAO.findById(userId);
+            if (user != null) {
+                request.setAttribute("user", user);
+                request.getRequestDispatcher("view/dashboard/admin/customer-details.jsp").forward(request, response);
+                return;
+            }
+        }
+        response.sendRedirect(request.getContextPath() + "/manage-users");
+    }
+
+   
 
 }
