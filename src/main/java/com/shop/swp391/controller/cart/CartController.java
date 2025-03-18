@@ -222,4 +222,50 @@ public class CartController extends HttpServlet {
         return new ArrayList<>(groupedItems.values());
     }
     
+    private void viewCart(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+        User user = (User) session.getAttribute(GlobalConfig.SESSION_ACCOUNT);
+
+        if (user == null) {
+            resp.sendRedirect("/authen?action=login");
+            return;
+        }
+
+        Cart cart = cartDAO.findByUserId(user.getId());
+        double total = 0;
+        
+        if (cart != null) {
+            List<CartItem> items = cartItemDAO.findByCartId(cart.getCartId());
+            
+            // Gộp các sản phẩm giống nhau
+            items = groupCartItems(items);
+            
+            // Populate thông tin sản phẩm cho từng cartItem
+            for (CartItem item : items) {
+                Product product = productDAO.getProductById(item.getProductId());
+                req.setAttribute("product_" + item.getCartItemId(), product);
+
+                // Lấy thumbnail từ ProductImgDAO
+                String thumbnail = productImgDAO.getProductThumbnail(product.getProductID());
+                req.setAttribute("thumbnail_" + item.getCartItemId(), thumbnail);
+
+                Variation variation = variationDAO.findById(item.getVariationId());
+                if (variation != null) {
+                    Color color = colorDAO.findById(variation.getColorID());
+                    Size size = sizeDAO.findById(variation.getSizeID());
+                    
+                    req.setAttribute("color_" + item.getCartItemId(), color);
+                    req.setAttribute("size_" + item.getCartItemId(), size);
+                    
+                    total += product.getPrice() * item.getQuantity();
+                }
+            }
+            
+            req.setAttribute("cartItems", items);
+        }
+        
+        req.setAttribute("total", total);
+        req.getRequestDispatcher("/view/cart/cart.jsp").forward(req, resp);
+    }
+    
 }
