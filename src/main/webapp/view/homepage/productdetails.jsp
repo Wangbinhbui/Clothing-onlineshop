@@ -60,54 +60,47 @@
                                                 <ul class="nav">
                                                     <li>
                                                         <a class="active" href="#view11" class="shadow-box" aria-controls="view11" data-bs-toggle="tab"><img src="${productThumbnail}" alt="Product Image" /></a></li>
-                                                    <li>
-                                                        <a href="#view22" class="shadow-box" aria-controls="view22" data-bs-toggle="tab"><img src="images/product/02.jpg" alt="" /></a></li>
-                                                    <li>
-                                                        <a href="#view33" class="shadow-box" aria-controls="view33" data-bs-toggle="tab"><img src="images/product/03.jpg" alt="" /></a></li>
-                                                    <li>
-                                                        <a href="#view44" class="shadow-box" aria-controls="view44" data-bs-toggle="tab"><img src="images/product/04.jpg" alt="" /></a></li>
-                                                </ul>
-                                            </div>
+                                                <li>
+                                                    <a href="#view22" class="shadow-box" aria-controls="view22" data-bs-toggle="tab"><img src="images/product/02.jpg" alt="" /></a></li>
+                                                <li>
+                                                    <a href="#view33" class="shadow-box" aria-controls="view33" data-bs-toggle="tab"><img src="images/product/03.jpg" alt="" /></a></li>
+                                                <li>
+                                                    <a href="#view44" class="shadow-box" aria-controls="view44" data-bs-toggle="tab"><img src="images/product/04.jpg" alt="" /></a></li>
+                                            </ul>
                                         </div>
                                     </div>
-                                    <div class="tab-content active-portfolio-area pos-rltv">                                       
-                                        <div role="tabpanel" class="tab-pane active" id="view11">
-                                            <div class="product-img">
-                                                <a class="fancybox" data-fancybox-group="group" href="images/product/01.jpg"><img src="${productThumbnail}" alt="Product Image" /></a>
-                                            </div>
+                                </div>
+                                <div class="tab-content active-portfolio-area pos-rltv">                                       
+                                    <div role="tabpanel" class="tab-pane active" id="view11">
+                                        <div class="product-img">
+                                            <a class="fancybox" data-fancybox-group="group" href="images/product/01.jpg"><img src="${productThumbnail}" alt="Product Image" /></a>
                                         </div>
-                                        <div role="tabpanel" class="tab-pane" id="view22">
-                                            <div class="product-img">
-                                                <a class="fancybox" data-fancybox-group="group" href="images/product/02.jpg"><img src="images/product/02.jpg" alt="Single portfolio" /></a>
-                                            </div>
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane" id="view22">
+                                        <div class="product-img">
+                                            <a class="fancybox" data-fancybox-group="group" href="images/product/02.jpg"><img src="images/product/02.jpg" alt="Single portfolio" /></a>
                                         </div>
-                                        <div role="tabpanel" class="tab-pane" id="view33">
-                                            <div class="product-img">
-                                                <a class="fancybox" data-fancybox-group="group" href="images/product/03.jpg"><img src="images/product/03.jpg" alt="Single portfolio" /></a>
-                                            </div>
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane" id="view33">
+                                        <div class="product-img">
+                                            <a class="fancybox" data-fancybox-group="group" href="images/product/03.jpg"><img src="images/product/03.jpg" alt="Single portfolio" /></a>
                                         </div>
-                                        <div role="tabpanel" class="tab-pane" id="view44">
-                                            <div class="product-img">
-                                                <a class="fancybox" data-fancybox-group="group" href="images/product/04.jpg"><img src="images/product/04.jpg" alt="Single portfolio" /></a>
-                                            </div>
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane" id="view44">
+                                        <div class="product-img">
+                                            <a class="fancybox" data-fancybox-group="group" href="images/product/04.jpg"><img src="images/product/04.jpg" alt="Single portfolio" /></a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-5">
-                                <div class="single-product-description">
-                                    <div class="sp-top-des">
-                                        <h3>${product.productName} </h3>
+                        </div>
+                        <div class="col-lg-5">
+                            <div class="single-product-description">
+                                <div class="sp-top-des">
+                                    <h3>${product.productName}</h3>
                                     <div class="prodcut-ratting-price">
-                                        <div class="prodcut-ratting"> 
-                                            <a href="#"><i class="fa fa-star-o"></i></a> 
-                                            <a href="#"><i class="fa fa-star-o"></i></a> 
-                                            <a href="#"><i class="fa fa-star-o"></i></a> 
-                                            <a href="#"><i class="fa fa-star-o"></i></a> 
-                                            <a href="#"><i class="fa fa-star-o"></i></a> 
-                                        </div>
                                         <div class="prodcut-price">
-                                            <div class="new-price"> $${product.price} </div>
+                                            <div class="new-price">$${product.price}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -120,7 +113,7 @@
                                     <div class="single-product-option">
                                         <div class="sort product-type">
                                             <label>Color: </label>
-                                            <select id="input-sort-color">
+                                            <select id="input-sort-color" name="colorId">
                                                 <c:forEach var="color" items="${colors}">
                                                     <option value="${color.colorID}">${color.colorName}</option>
                                                 </c:forEach>
@@ -129,7 +122,7 @@
 
                                         <div class="sort product-type">
                                             <label>Size: </label>
-                                            <select id="input-sort-size">
+                                            <select id="input-sort-size" name="sizeId">
                                                 <c:forEach var="size" items="${sizes}">
                                                     <option value="${size.sizeID}">${size.sizeName}</option>
                                                 </c:forEach>
@@ -139,22 +132,31 @@
                                     <div class="quantity-area">
                                         <label>Qty :</label>
                                         <div class="cart-quantity">
-                                                <div class="product-qty">
-                                                    <div class="cart-quantity">
-                                                        <div class="cart-plus-minus">
-                                                            <div class="dec qtybutton">-</div>
-                                                            <input type="text" value="01" name="qtybutton" class="cart-plus-minus-box">
-                                                            <div class="inc qtybutton">+</div>
-                                                        </div>
-                                                    </div>
-                                                </div>                                        
+                                            <div class="product-qty">
+                                                <div class="cart-plus-minus">
+                                                    <div class="dec qtybutton">-</div>
+                                                    <input type="text" value="1" name="quantity" class="cart-plus-minus-box">
+                                                    <div class="inc qtybutton">+</div>
+                                                </div>
+                                            </div>                                        
                                         </div>
                                     </div>
-                                    <div class="social-icon socile-icon-style-1">
-                                        <ul>
-                                            <li><a href="#" data-tooltip="Add To Cart" class="add-cart add-cart-text" data-placement="left" tabindex="0">Add To Cart<i class="fa fa-cart-plus"></i></a></li>
-                                        </ul>
-                                    </div>
+                                    <form action="cart" method="post" class="add-to-cart-form">
+                                        <input type="hidden" name="action" value="add">
+                                        <input type="hidden" name="productId" value="${product.productID}">
+                                        <input type="hidden" name="colorId" id="selected-color">
+                                        <input type="hidden" name="sizeId" id="selected-size">
+                                        <input type="hidden" name="quantity" id="selected-quantity">
+                                        <div class="social-icon socile-icon-style-1">
+                                            <ul>
+                                                <li>
+                                                    <button type="submit" class="add-cart add-cart-text" data-tooltip="Add To Cart" data-placement="left" tabindex="0">
+                                                        Add To Cart <i class="fa fa-cart-plus"></i>
+                                                    </button>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -192,7 +194,7 @@
                                                     <h5>SIZE & FIT</h5>
                                                     <ul>
                                                         <li>Model wears: Style Photoliya U2980</li>
-                                                        <li>Model's height: 185”66</li>
+                                                        <li>Model's height: 185"66</li>
                                                     </ul>
                                                     <h5>Overview</h5>
                                                     <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form.</p>
@@ -204,7 +206,7 @@
                                                     <h5>SIZE & FIT</h5>
                                                     <ul>
                                                         <li>Model wears: Style Photoliya U2980</li>
-                                                        <li>Model's height: 185”66</li>
+                                                        <li>Model's height: 185"66</li>
                                                     </ul>
                                                     <h5>ABOUT ME</h5>
                                                     <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English</p>
@@ -260,8 +262,17 @@
                                             </div>
                                             <div class="product-icon socile-icon-tooltip text-center">
                                                 <ul>
-                                                    <li><a href="#" data-tooltip="Add To Cart" class="add-cart"
-                                                           data-placement="left"><i class="fa fa-cart-plus"></i></a></li>
+                                                    <li>
+                                                        <form action="cart" method="POST" style="display: inline;">
+                                                            <input type="hidden" name="action" value="add">
+                                                            <input type="hidden" name="productId" value="${product.productID}">
+                                                            <input type="hidden" name="quantity" value="1">
+                                                            <button type="submit" class="add-cart">
+                                                                <i class="fa fa-cart-plus"></i>
+                                                            </button>
+                                                        </form>
+                                                    </li>
+
                                                     <li><a href="#" data-tooltip="Wishlist" class="w-list"><i
                                                                 class="fa fa-heart-o"></i></a></li>
                                                     <li><a href="#" data-tooltip="Compare" class="cpare"><i
@@ -294,8 +305,18 @@
                                             </div>
                                             <div class="product-icon socile-icon-tooltip text-center">
                                                 <ul>
-                                                    <li><a href="#" data-tooltip="Add To Cart" class="add-cart"
-                                                           data-placement="left"><i class="fa fa-cart-plus"></i></a></li>
+                                                    <li>
+                                                        <form action="cart-details" method="post">
+                                                            <input type="hidden" name="action" value="add">
+                                                            <input type="hidden" name="productId" value="${product.productID}">
+                                                            <input type="hidden" name="quantity" value="1">
+                                                            <button type="submit" data-tooltip="Add To Cart" class="add-cart" data-placement="left">
+                                                                <i class="fa fa-cart-plus"></i>
+                                                            </button>
+                                                        </form>
+
+                                                    </li>
+
                                                     <li><a href="#" data-tooltip="Wishlist" class="w-list"><i
                                                                 class="fa fa-heart-o"></i></a></li>
                                                     <li><a href="#" data-tooltip="Compare" class="cpare"><i
@@ -460,6 +481,15 @@
 
             <!-- jquery latest version -->
         <jsp:include page="../common/home/js-home.jsp"></jsp:include>
+
+        <script>
+            // Update hidden inputs with selected values
+            document.querySelector('.add-to-cart-form').addEventListener('submit', function() {
+                document.getElementById('selected-color').value = document.getElementById('input-sort-color').value;
+                document.getElementById('selected-size').value = document.getElementById('input-sort-size').value;
+                document.getElementById('selected-quantity').value = document.querySelector('.cart-plus-minus-box').value;
+            });
+        </script>
 
     </body>
 
