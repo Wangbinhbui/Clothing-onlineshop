@@ -501,6 +501,100 @@ public class ProductDAO extends DBContext implements I_DAO<Product> {
         return products;
     }
 
-    
+    public int countFilteredProducts(String search, Integer categoryId, Integer collectionId, 
+                                   Double minPrice, Double maxPrice, Integer status) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM product WHERE 1=1");
+        List<Object> params = new ArrayList<>();
+
+        if (search != null && !search.isEmpty()) {
+            sql.append(" AND ProductName LIKE ?");
+            params.add("%" + search + "%");
+        }
+        if (categoryId != null) {
+            sql.append(" AND CategoryID = ?");
+            params.add(categoryId);
+        }
+        if (collectionId != null) {
+            sql.append(" AND CollectionID = ?");
+            params.add(collectionId);
+        }
+        if (minPrice != null) {
+            sql.append(" AND Price >= ?");
+            params.add(minPrice);
+        }
+        if (maxPrice != null) {
+            sql.append(" AND Price <= ?");
+            params.add(maxPrice);
+        }
+        if (status != null) {
+            sql.append(" AND status = ?");
+            params.add(status);
+        }
+
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql.toString());
+            
+            for (int i = 0; i < params.size(); i++) {
+                Object param = params.get(i);
+                if (param instanceof String) {
+                    statement.setString(i + 1, (String) param);
+                } else if (param instanceof Integer) {
+                    statement.setInt(i + 1, (Integer) param);
+                } else if (param instanceof Double) {
+                    statement.setDouble(i + 1, (Double) param);
+                }
+            }
+            
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error in countFilteredProducts: " + ex.getMessage());
+        } finally {
+            closeResources();
+        }
+        return 0;
+    }
+
+    public boolean changeStatus(int productId, int newStatus) {
+        String sql = "UPDATE product SET status = ? WHERE ProductID = ?";
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, newStatus);
+            statement.setInt(2, productId);
+            
+            int affectedRows = statement.executeUpdate();
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            closeResources();
+        }
+    }
+
+    public static void main(String[] args) {
+        ProductDAO productDAO = new ProductDAO();
+
+        int testProductId = 4; // Change this to a valid product ID from your database
+
+        // Test getAvailableColors
+        List<Color> colors = productDAO.getAvailableColors(testProductId);
+        System.out.println("Available Colors:");
+        for (Color color : colors) {
+            System.out.println("ID: " + color.getColorID() + ", Name: " + color.getColorName());
+        }
+
+        // Test getAvailableSizes
+        List<Size> sizes = productDAO.getAvailableSizes(testProductId);
+        System.out.println("\nAvailable Sizes:");
+        for (Size size : sizes) {
+            System.out.println("ID: " + size.getSizeID() + ", Name: " + size.getSizeName());
+        }
+    }
+
 
 }
