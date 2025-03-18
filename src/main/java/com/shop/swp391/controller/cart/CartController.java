@@ -294,5 +294,54 @@ public class CartController extends HttpServlet {
         return null;
     }
 
-    
+    private void checkout(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+        User user = (User) session.getAttribute(GlobalConfig.SESSION_ACCOUNT);
+
+        if (user == null) {
+            resp.sendRedirect("/authen?action=login");
+            return;
+        }
+
+        // Lấy giỏ hàng của người dùng
+        Cart cart = cartDAO.findByUserId(user.getId());
+        double total = 0;
+
+        // Tạo danh sách composite chứa các thông tin chi tiết của CartItem
+        List<Map<String, Object>> cartItemDetails = new ArrayList<>();
+
+        if (cart != null) {
+            List<CartItem> items = cartItemDAO.findByCartId(cart.getCartId());
+            // Gộp các sản phẩm giống nhau
+            items = groupCartItems(items);
+            for (CartItem item : items) {
+                Map<String, Object> detail = new HashMap<>();
+                detail.put("cartItem", item);
+
+                // Lấy thông tin sản phẩm
+                Product product = productDAO.getProductById(item.getProductId());
+                detail.put("product", product);
+
+                // Lấy thumbnail từ ProductImgDAO
+                String thumbnail = productImgDAO.getProductThumbnail(product.getProductID());
+                detail.put("thumbnail", thumbnail);
+
+                // Lấy thông tin variation (và từ đó lấy màu, kích cỡ)
+                Variation variation = variationDAO.findById(item.getVariationId());
+                if (variation != null) {
+                    Color color = colorDAO.findById(variation.getColorID());
+                    Size size = sizeDAO.findById(variation.getSizeID());
+                    detail.put("color", color);
+                    detail.put("size", size);
+                }
+
+                total += product.getPrice() * item.getQuantity();
+                cartItemDetails.add(detail);
+            }
+        }
+
+        req.setAttribute("cartItemDetails", cartItemDetails);
+        req.setAttribute("total", total);
+        req.getRequestDispatcher("/view/cart/checkout.jsp").forward(req, resp);
+    }
 }
