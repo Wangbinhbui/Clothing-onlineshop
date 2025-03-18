@@ -77,6 +77,24 @@
         </a>
       </li>
       <li>
+        <a href="${pageContext.request.contextPath}/manage-customers">
+          <iconify-icon icon="icon-park-outline:setting-two" class="menu-icon"></iconify-icon>
+          <span>Customer Management</span> 
+        </a>
+      </li>
+      <li>
+        <a href="${pageContext.request.contextPath}/manage-products">
+          <iconify-icon icon="icon-park-outline:setting-two" class="menu-icon"></iconify-icon>
+          <span>Product Management</span> 
+        </a>
+      </li>
+      <li>
+        <a href="${pageContext.request.contextPath}/manage-variation">
+          <iconify-icon icon="icon-park-outline:setting-two" class="menu-icon"></iconify-icon>
+          <span>Variation Management</span> 
+        </a>
+      </li>
+      <li>
         <a href="${pageContext.request.contextPath}/change-password">
           <iconify-icon icon="icon-park-outline:setting-two" class="menu-icon"></iconify-icon>
           <span>Change Password</span> 
