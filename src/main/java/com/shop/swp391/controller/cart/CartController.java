@@ -148,5 +148,37 @@ public class CartController extends HttpServlet {
         resp.sendRedirect(referer);
     }
 
+    private void updateCartItem(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        // Lấy mảng các cartItemId và quantity từ form
+        String[] cartItemIds = req.getParameterValues("cartItemId");
+        String[] quantities = req.getParameterValues("quantity");
+        
+        if (cartItemIds != null && quantities != null && cartItemIds.length == quantities.length) {
+            for (int i = 0; i < cartItemIds.length; i++) {
+                try {
+                    int id = Integer.parseInt(cartItemIds[i]);
+                    int qty = Integer.parseInt(quantities[i]);
+                    
+                    // Validate số lượng: nếu nhỏ hơn 1 thì gán lại bằng 1
+                    if (qty < 1) {
+                        System.out.println("Số lượng (" + qty + ") không hợp lệ cho cartItemID " + id + ". Gán lại giá trị tối thiểu là 1.");
+                        qty = 1;
+                    }
+                    
+                    // Cập nhật CartItem
+                    CartItem item = cartItemDAO.findById(id);
+                    if (item != null) {
+                        item.setQuantity(qty);
+                        // Nếu có nhiều bản ghi dư (cùng productId và variationId), bạn có thể cập nhật tất cả như đã hướng dẫn.
+                        cartItemDAO.update(item);
+                    }
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        
+        resp.sendRedirect("cart?action=view");
+    }
     
 }
