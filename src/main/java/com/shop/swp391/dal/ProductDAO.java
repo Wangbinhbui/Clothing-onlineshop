@@ -198,5 +198,54 @@ public class ProductDAO extends DBContext implements I_DAO<Product> {
         }
         return count;
     }
-    
-}
+    public List<Product> findFilteredProducts(Integer categoryId, Integer collectionId, Double minPrice, Double maxPrice, int page, int pageSize) {
+        List<Product> products = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT * FROM product WHERE 1=1");
+        List<Object> params = new ArrayList<>();
+        
+        if (categoryId != null) {
+            sql.append(" AND CategoryID = ?");
+            params.add(categoryId);
+        }
+        
+        if (collectionId != null) {
+            sql.append(" AND CollectionID = ?");
+            params.add(collectionId);
+        }
+        
+        if (minPrice != null) {
+            sql.append(" AND Price >= ?");
+            params.add(minPrice);
+        }
+        
+        if (maxPrice != null) {
+            sql.append(" AND Price <= ?");
+            params.add(maxPrice);
+        }
+        
+        sql.append(" ORDER BY ProductID LIMIT ? OFFSET ?");
+        params.add(pageSize);
+        params.add((page - 1) * pageSize);
+        
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql.toString());
+            
+            for (int i = 0; i < params.size(); i++) {
+                statement.setObject(i + 1, params.get(i));
+            }
+            
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                products.add(getFromResultSet(resultSet));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+        
+        return products;
+    }
+
+    }
