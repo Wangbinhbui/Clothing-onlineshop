@@ -205,4 +205,21 @@ public class CartController extends HttpServlet {
         resp.sendRedirect("cart?action=view");
     }
     
+    /**
+     * Gộp các item có cùng productId và variationId lại với nhau và cộng số lượng.
+     */
+    private List<CartItem> groupCartItems(List<CartItem> items) {
+        Map<String, CartItem> groupedItems = new HashMap<>();
+        for (CartItem item : items) {
+            String key = item.getProductId() + "_" + item.getVariationId();
+            if (groupedItems.containsKey(key)) {
+                CartItem existingItem = groupedItems.get(key);
+                existingItem.setQuantity(existingItem.getQuantity() + item.getQuantity());
+            } else {
+                groupedItems.put(key, item);
+            }
+        }
+        return new ArrayList<>(groupedItems.values());
+    }
+    
 }
