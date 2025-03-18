@@ -284,4 +284,15 @@ public class CartController extends HttpServlet {
         return total;
     }
    
+    private CartItem findCartItemByProductAndVariation(int cartId, int productId, int variationId) {
+        List<CartItem> items = cartItemDAO.findByCartId(cartId);
+        for (CartItem item : items) {
+            if (item.getProductId() == productId && item.getVariationId() == variationId) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    
 }
