@@ -268,4 +268,20 @@ public class CartController extends HttpServlet {
         req.getRequestDispatcher("/view/cart/cart.jsp").forward(req, resp);
     }
     
+    private double calculateTotal(Cart cart, Promotion promotion) {
+        List<CartItem> items = cartItemDAO.findByCartId(cart.getCartId());
+        double total = 0;
+
+        for (CartItem item : items) {
+            Product product = productDAO.getProductById(item.getProductId());
+            total += product.getPrice() * item.getQuantity();
+        }
+
+        if (promotion != null) {
+            total *= (1 - promotion.getDiscountRate());
+        }
+
+        return total;
+    }
+   
 }
