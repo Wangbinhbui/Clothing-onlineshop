@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.lang.StringBuilder;
 
 @WebServlet(name = "CartController", urlPatterns = {"/cart"})
 public class CartController extends HttpServlet {
@@ -81,6 +82,9 @@ public class CartController extends HttpServlet {
             case "checkout":
                 checkout(req, resp);
                 break;
+            case "vnpay-return":
+                handleVnPayReturn(req, resp);
+                break;
             default:
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
@@ -92,7 +96,8 @@ public class CartController extends HttpServlet {
 
         if (user == null) {
             // Nếu chưa đăng nhập, lưu thông báo lỗi và chuyển hướng về trang trước
-            session.setAttribute("toastError", "Please login first.");
+            session.setAttribute("toastType", "error");
+            session.setAttribute("toastMessage", "Please login first.");
             resp.sendRedirect(req.getHeader("referer"));
             return;
         }
@@ -104,9 +109,25 @@ public class CartController extends HttpServlet {
             int sizeId = Integer.parseInt(req.getParameter("sizeId"));
 
             // Tìm variation dựa theo colorId và sizeId
-            Variation variation = variationDAO.findByColorIdAndSizeId(colorId, sizeId);
+            Variation variation = variationDAO.findByProductColorSize(productId, colorId, sizeId);
             if (variation == null) {
-                session.setAttribute("toastError", "Invalid color or size selection");
+                session.setAttribute("toastType", "error");
+                session.setAttribute("toastMessage", "Invalid color or size selection");
+                resp.sendRedirect(req.getHeader("referer"));
+                return;
+            }
+
+            // Kiểm tra tồn kho
+            if (variation.getQtyInStock() <= 0) {
+                session.setAttribute("toastType", "error");
+                session.setAttribute("toastMessage", "Product is out of stock");
+                resp.sendRedirect(req.getHeader("referer"));
+                return;
+            }
+
+            if (variation.getQtyInStock() < quantity) {
+                session.setAttribute("toastType", "error");
+                session.setAttribute("toastMessage", "Not enough stock. Only " + variation.getQtyInStock() + " available.");
                 resp.sendRedirect(req.getHeader("referer"));
                 return;
             }
@@ -134,10 +155,23 @@ public class CartController extends HttpServlet {
                 cartItemDAO.insert(newItem);
             }
 
-            session.setAttribute("toastMessage", "Product added to cart successfully");
+            // Tạo thông báo thành công
+            Product product = productDAO.getProductById(productId);
+            Color color = colorDAO.findById(colorId);
+            Size size = sizeDAO.findById(sizeId);
+            
+            StringBuilder message = new StringBuilder();
+            message.append(product.getProductName());
+            message.append(" (Color: ").append(color.getColorName());
+            message.append(", Size: ").append(size.getSizeName());
+            message.append(") has been added to your cart");
+            
+            session.setAttribute("toastType", "success");
+            session.setAttribute("toastMessage", message.toString());
         } catch (Exception e) {
             e.printStackTrace();
-            session.setAttribute("toastError", "Có lỗi khi thêm sản phẩm vào giỏ: " + e.getMessage());
+            session.setAttribute("toastType", "error");
+            session.setAttribute("toastMessage", "Error adding product to cart: " + e.getMessage());
         }
 
         // Chuyển hướng về trang gửi trước (referer) hoặc trang mặc định nếu không có referer
@@ -227,7 +261,7 @@ public class CartController extends HttpServlet {
         User user = (User) session.getAttribute(GlobalConfig.SESSION_ACCOUNT);
 
         if (user == null) {
-            resp.sendRedirect("/authen?action=login");
+            resp.sendRedirect("authen?action=login");
             return;
         }
 
@@ -299,10 +333,12 @@ public class CartController extends HttpServlet {
         User user = (User) session.getAttribute(GlobalConfig.SESSION_ACCOUNT);
 
         if (user == null) {
-            resp.sendRedirect("/authen?action=login");
+            resp.sendRedirect("authen?action=login");
             return;
         }
 
+        String paymentMethod = req.getParameter("paymentMethod");
+        
         // Lấy giỏ hàng của người dùng
         Cart cart = cartDAO.findByUserId(user.getId());
         double total = 0;
@@ -339,9 +375,158 @@ public class CartController extends HttpServlet {
                 cartItemDetails.add(detail);
             }
         }
+        
+        // Kiểm tra phương thức thanh toán
+        if ("vnpay".equals(paymentMethod)) {
+            // Chuẩn bị dữ liệu để gửi đến VNPAY
+            
+            // Tạo mã đơn hàng duy nhất
+            String orderId = System.currentTimeMillis() + "";
+            
+            // Lưu thông tin đơn hàng vào session để xử lý sau khi thanh toán xong
+            session.setAttribute("pendingOrderItems", cartItemDetails);
+            session.setAttribute("pendingOrderTotal", total);
+            session.setAttribute("pendingOrderId", orderId);
+            
+            // Chuyển hướng đến trang payment của AJAX servlet
+            resp.sendRedirect(req.getContextPath() + "/ajaxServlet?action=pay&amount=" + Math.round(total) + "&orderId=" + orderId);
+            return;
+        } else if ("cod".equals(paymentMethod)) {
+            // Xử lý đơn hàng thanh toán khi nhận hàng (COD)
+            processOrder(user, cartItemDetails, total, "PENDING", req, resp);
+        } else {
+            // Nếu chưa chọn phương thức thanh toán, hiển thị trang checkout
+            req.setAttribute("cartItemDetails", cartItemDetails);
+            req.setAttribute("total", total);
+            req.getRequestDispatcher("/view/cart/checkout.jsp").forward(req, resp);
+        }
+    }
+    
+    // Phương thức xử lý VNPAY trả về
+    private void handleVnPayReturn(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+        User user = (User) session.getAttribute(GlobalConfig.SESSION_ACCOUNT);
 
-        req.setAttribute("cartItemDetails", cartItemDetails);
-        req.setAttribute("total", total);
-        req.getRequestDispatcher("/view/cart/checkout.jsp").forward(req, resp);
+        if (user == null) {
+            resp.sendRedirect("/authen?action=login");
+            return;
+        }
+        
+        // Lấy thông tin đơn hàng từ session
+        List<Map<String, Object>> cartItemDetails = (List<Map<String, Object>>) session.getAttribute("pendingOrderItems");
+        Double total = (Double) session.getAttribute("pendingOrderTotal");
+        String orderId = (String) session.getAttribute("pendingOrderId");
+        
+        // Xóa thông tin đơn hàng tạm thời khỏi session
+        session.removeAttribute("pendingOrderItems");
+        session.removeAttribute("pendingOrderTotal");
+        session.removeAttribute("pendingOrderId");
+        
+        // Lấy kết quả thanh toán từ VNPAY
+        String vnp_ResponseCode = req.getParameter("vnp_ResponseCode");
+        String vnp_TransactionStatus = req.getParameter("vnp_TransactionStatus");
+        
+        // Kiểm tra kết quả thanh toán
+        if ("00".equals(vnp_ResponseCode) && "00".equals(vnp_TransactionStatus)) {
+            // Thanh toán thành công
+            processOrder(user, cartItemDetails, total, "PAID", req, resp);
+        } else {
+            // Thanh toán thất bại
+            session.setAttribute("toastType", "error");
+            session.setAttribute("toastMessage", "Thanh toán không thành công. Mã lỗi: " + vnp_ResponseCode);
+            resp.sendRedirect(req.getContextPath() + "/cart");
+        }
+    }
+    
+    // Phương thức xử lý đơn hàng sau khi thanh toán hoặc chọn COD
+    private void processOrder(User user, List<Map<String, Object>> cartItemDetails, double total, String paymentStatus, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+        
+        try {
+            // Initialize order-related DAOs
+            ShopOrderDAO orderDAO = new ShopOrderDAO();
+            OrderDetailsDAO orderDetailDAO = new OrderDetailsDAO();
+            
+            // Create new shop order
+            ShopOrder order = new ShopOrder();
+            order.setUserID(user.getId());
+            
+            // TODO: Future enhancement - Allow user to select a shipping address
+            // For now, we'll set addressID null and use user's information directly
+            order.setAddressID(13);
+            
+            // Set order total (rounded to nearest integer)
+            order.setOrderTotal((int)Math.round(total));
+            
+            // Set order status based on payment method
+            // 1 = Pending (for COD)
+            // 2 = Paid (for successful VNPAY payment)
+            order.setOrderStatus(1);
+            
+            // Set recipient info from user data
+            order.setRecipient(user.getFirstName() + " " + user.getLastName());
+            order.setRecipientPhone(user.getPhone());
+            
+            // Insert order and get generated order ID
+            int orderId = orderDAO.insert(order);
+            
+            if (orderId == -1) {
+                throw new Exception("Failed to create order in database");
+            }
+            
+            // Create order details for each cart item
+            for (Map<String, Object> item : cartItemDetails) {
+                CartItem cartItem = (CartItem) item.get("cartItem");
+                Product product = (Product) item.get("product");
+                
+                OrderDetails orderDetail = new OrderDetails();
+                orderDetail.setOrderID(orderId);
+                orderDetail.setProductID(product.getProductID());
+                orderDetail.setVariationID(cartItem.getVariationId());
+                orderDetail.setQuantity(cartItem.getQuantity());
+                
+                // Set price (using product price)
+                orderDetail.setPrice((int)Math.round(product.getPrice()));
+                
+                // Insert order detail
+                int orderDetailId = orderDetailDAO.insert(orderDetail);
+                
+                if (orderDetailId == -1) {
+                    throw new Exception("Failed to create order detail in database");
+                }
+                
+                // Update product stock (decrease quantity)
+                Variation variation = variationDAO.findById(cartItem.getVariationId());
+                if (variation != null) {
+                    int newStock = variation.getQtyInStock() - cartItem.getQuantity();
+                    // Use the more efficient updateStockQuantity method
+                    variationDAO.updateStockQuantity(variation.getVariationID(), newStock);
+                }
+            }
+            
+            // Clear the user's cart after successful order creation
+            Cart cart = cartDAO.findByUserId(user.getId());
+            if (cart != null) {
+                List<CartItem> items = cartItemDAO.findByCartId(cart.getCartId());
+                for (CartItem item : items) {
+                    cartItemDAO.delete(item);
+                }
+            }
+            
+            // Set success message
+            session.setAttribute("toastType", "success");
+            session.setAttribute("toastMessage", "Đặt hàng thành công! " + 
+                ("PAID".equals(paymentStatus) ? "Thanh toán đã hoàn tất." : "Đơn hàng sẽ được thanh toán khi nhận hàng."));
+            
+            // TODO: Create an order confirmation page
+            // For now, redirect to cart
+            resp.sendRedirect(req.getContextPath() + "/cart");
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            session.setAttribute("toastType", "error");
+            session.setAttribute("toastMessage", "Có lỗi xảy ra khi xử lý đơn hàng: " + e.getMessage());
+            resp.sendRedirect(req.getContextPath() + "/cart");
+        }
     }
 }
