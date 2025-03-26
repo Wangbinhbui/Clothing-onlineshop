@@ -4,10 +4,8 @@
  */
 package com.shop.swp391.controller.home;
 
-import com.shop.swp391.dal.ColorDAO;
 import com.shop.swp391.dal.ProductDAO;
 import com.shop.swp391.dal.ProductImgDAO;
-import com.shop.swp391.entity.Color;
 import com.shop.swp391.entity.Product;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -53,7 +51,6 @@ public class ProductListController extends HttpServlet {
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -62,75 +59,170 @@ public class ProductListController extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    private final ProductDAO productDAO = new ProductDAO();
-    private final ProductImgDAO productImgDAO = new ProductImgDAO();
-    private static final int PAGE_SIZE = 9;
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int page = 1;
-        String sortBy = request.getParameter("sortBy");
-        String minPriceParam = request.getParameter("minPrice");
-        String maxPriceParam = request.getParameter("maxPrice");
-        String priceRange = request.getParameter("price");
-        String colorParam = request.getParameter("color");
-        Double minPrice = null;
-        Double maxPrice = null;
-        Integer colorID = null;
-        if (priceRange != null && !priceRange.isEmpty()) {
-            String[] prices = priceRange.replace("$", "").split(" - ");
-            if (prices.length == 2) {
+        try {
+            // Set character encoding for request and response
+            request.setCharacterEncoding("UTF-8");
+            response.setContentType("text/html;charset=UTF-8");
+            
+            // Initialize ProductDAO
+            ProductDAO productDAO = new ProductDAO();
+            
+            // Get min and max product prices from database
+            double dbMinPrice = productDAO.getMinProductPrice();
+            double dbMaxPrice = productDAO.getMaxProductPrice();
+            
+            // Get parameters from request
+            String searchQuery = request.getParameter("search");
+            String pageParam = request.getParameter("page");
+            String minPriceParam = request.getParameter("minPrice");
+            String maxPriceParam = request.getParameter("maxPrice");
+            String colorIdParam = request.getParameter("colorId");
+            String sortBy = request.getParameter("sortBy");
+            
+            // Parse parameters
+            int currentPage = 1;
+            if (pageParam != null && !pageParam.isEmpty()) {
                 try {
-                    minPrice = Double.valueOf(prices[0].trim());
-                    maxPrice = Double.valueOf(prices[1].trim());
+                    currentPage = Integer.parseInt(pageParam);
+                    if (currentPage < 1) {
+                        currentPage = 1;
+                    }
                 } catch (NumberFormatException e) {
-                    e.printStackTrace();
+                    // Invalid page parameter, default to 1
+                    currentPage = 1;
                 }
             }
-        } else {
+            
+            Double minPrice = null;
             if (minPriceParam != null && !minPriceParam.isEmpty()) {
-                minPrice = Double.valueOf(minPriceParam);
+                try {
+                    minPrice = Double.parseDouble(minPriceParam);
+                } catch (NumberFormatException e) {
+                    // Invalid minPrice parameter, ignore it
+                }
             }
+            
+            Double maxPrice = null;
             if (maxPriceParam != null && !maxPriceParam.isEmpty()) {
-                maxPrice = Double.valueOf(maxPriceParam);
+                try {
+                    maxPrice = Double.parseDouble(maxPriceParam);
+                } catch (NumberFormatException e) {
+                    // Invalid maxPrice parameter, ignore it
+                }
             }
-        }
-        if (colorParam != null && !colorParam.isEmpty()) {
-            colorID = Integer.valueOf(colorParam);
-        }
-        try {
-            String pageParam = request.getParameter("page");
-            if (pageParam != null && !pageParam.isEmpty()) {
-                page = Integer.parseInt(pageParam);
+            
+            Integer colorId = null;
+            if (colorIdParam != null && !colorIdParam.isEmpty()) {
+                try {
+                    colorId = Integer.parseInt(colorIdParam);
+                } catch (NumberFormatException e) {
+                    // Invalid colorId parameter, ignore it
+                }
             }
-        } catch (NumberFormatException e) {
-            page = 1;
+            
+            // Define items per page
+            int pageSize = 6;
+            
+            // Get total products count based on filters
+            int totalProducts = productDAO.countProductsWithFilters(searchQuery, minPrice, maxPrice, colorId);
+            
+            // Calculate total pages
+            int totalPages = (int) Math.ceil((double) totalProducts / pageSize);
+            
+            // Adjust currentPage if needed
+            if (currentPage > totalPages && totalPages > 0) {
+                currentPage = totalPages;
+            }
+            
+            // Calculate pagination variables
+            int pagesToShow = 5;
+            int halfPagesToShow = pagesToShow / 2;
+            int startPage = Math.max(1, currentPage - halfPagesToShow);
+            int endPage = Math.min(totalPages, startPage + pagesToShow - 1);
+            if (endPage - startPage + 1 < pagesToShow) {
+                startPage = Math.max(1, endPage - pagesToShow + 1);
+            }
+            
+            // Get list of products for current page
+            List<Product> products = productDAO.searchProductsWithFilters(searchQuery, currentPage, pageSize, sortBy, minPrice, maxPrice, colorId);
+            
+            // Get thumbnail for each product
+            ProductImgDAO productImgDAO = new ProductImgDAO();
+            Map<Integer, String> thumbnails = new HashMap<>();
+            for (Product product : products) {
+                thumbnails.put(product.getProductID(), productImgDAO.getProductThumbnail(product.getProductID()));
+            }
+            
+            // Build pagination URL
+            String paginationUrl = buildPaginationUrl(request);
+            
+            // Set attributes for the JSP
+            request.setAttribute("products", products);
+            request.setAttribute("thumbnails", thumbnails);
+            request.setAttribute("currentPage", currentPage);
+            request.setAttribute("totalPages", totalPages);
+            request.setAttribute("totalProducts", totalProducts);
+            request.setAttribute("paginationUrl", paginationUrl);
+            request.setAttribute("startPage", startPage);
+            request.setAttribute("endPage", endPage);
+            
+            // Set filter attributes for JSP
+            request.setAttribute("search", searchQuery);
+            request.setAttribute("minPrice", minPrice);
+            request.setAttribute("maxPrice", maxPrice);
+            request.setAttribute("colorId", colorId);
+            request.setAttribute("sortBy", sortBy != null ? sortBy : "default");
+            
+            // Set database min/max price attributes for the price filter
+            request.setAttribute("dbMinPrice", dbMinPrice);
+            request.setAttribute("dbMaxPrice", dbMaxPrice);
+            
+            // Forward to product list page
+            request.getRequestDispatcher("/view/homepage/productlist.jsp").forward(request, response);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An error occurred while processing your request.");
         }
+    }
 
-        int totalProducts = productDAO.getTotalProductCount();
-        int totalPages = (int) Math.ceil((double) totalProducts / PAGE_SIZE);
-        if (page < 1) {
-            page = 1;
+    /**
+     * Builds the pagination URL maintaining all current query parameters except page
+     * @param request The HTTP request
+     * @return URL string with query parameters
+     */
+    private String buildPaginationUrl(HttpServletRequest request) {
+        StringBuilder url = new StringBuilder("products?");
+        Map<String, String[]> parameters = request.getParameterMap();
+        boolean firstParam = true;
+        
+        for (Map.Entry<String, String[]> entry : parameters.entrySet()) {
+            String paramName = entry.getKey();
+            String[] paramValues = entry.getValue();
+            
+            // Skip the page parameter, as it will be added in the pagination links
+            if ("page".equals(paramName)) {
+                continue;
+            }
+            
+            for (String paramValue : paramValues) {
+                if (!firstParam) {
+                    url.append("&");
+                } else {
+                    firstParam = false;
+                }
+                url.append(paramName).append("=").append(paramValue);
+            }
         }
-        if (page > totalPages) {
-            page = totalPages;
+        
+        if (!firstParam) {
+            url.append("&");
         }
-        List<Product> products = productDAO.findPagedProducts(page, PAGE_SIZE, sortBy, minPrice, maxPrice, colorID);
-        Map<Integer, String> productImages = new HashMap<>();
-        for (Product product : products) {
-            String imagePath = productImgDAO.getProductThumbnail(product.getProductID());
-            productImages.put(product.getProductID(), imagePath);
-        }
-        request.setAttribute("products", products);
-        request.setAttribute("productImages", productImages);
-        request.setAttribute("currentPage", page);
-        request.setAttribute("totalPages", totalPages);
-        request.setAttribute("sortBy", sortBy);
-        request.setAttribute("minPrice", minPrice);
-        request.setAttribute("maxPrice", maxPrice);
-        request.setAttribute("color", colorID);
-        request.getRequestDispatcher("view/homepage/productlist.jsp").forward(request, response);
+        
+        return url.toString();
     }
 
     /**
@@ -158,3 +250,4 @@ public class ProductListController extends HttpServlet {
     }// </editor-fold>
 
 }
+

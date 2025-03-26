@@ -12,10 +12,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-/**
- *
- * @author hung
- */
 @ToString
 @Builder
 @Data
@@ -23,13 +19,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Product {
-    private Integer productID;
-    private Integer categoryID;
-    private String productName;
-    private double price;
-    private Integer collectionID;
-    private String description;
-    private int status; // 1 - Active, 0 - Inactive
+public class UserAddress {
 
+    private int addressID;
+    private int userID;
 }

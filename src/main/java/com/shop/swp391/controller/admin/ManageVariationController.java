@@ -56,6 +56,9 @@ public class ManageVariationController extends HttpServlet {
                 case "add-variation":
                     showAddVariationForm(request, response);
                     break;
+                case "delete-variation":
+                    deleteVariation(request, response);
+                    break;
             }
         }
        
@@ -73,15 +76,16 @@ public class ManageVariationController extends HttpServlet {
                 int sizeId = Integer.parseInt(request.getParameter("sizeId"));
                 int qtyInStock = Integer.parseInt(request.getParameter("qtyInStock"));
                 
-                // Xử lý upload ảnh
-                Part filePart1 = request.getPart("productImg1");
-                Part filePart2 = request.getPart("productImg2");
-                Part filePart3 = request.getPart("productImg3");
+                // Xử lý upload ảnh - chỉ một ảnh
+                Part filePart = request.getPart("productImg");
                 
                 // Lưu ảnh và lấy đường dẫn
-                String imgPath1 = saveUploadedFile(filePart1);
-                String imgPath2 = saveUploadedFile(filePart2);
-                String imgPath3 = saveUploadedFile(filePart3);
+                String imgPath = saveUploadedFile(filePart);
+                if (imgPath == null) {
+                    request.setAttribute("errorMessage", "Image file is required");
+                    showAddVariationForm(request, response);
+                    return;
+                }
                 
                 // Tạo đối tượng Variation
                 Variation variation = new Variation();
@@ -90,9 +94,8 @@ public class ManageVariationController extends HttpServlet {
                 variation.setSizeID(sizeId);
                 variation.setQtyInStock(qtyInStock);
                 
-                // Lưu thông tin ảnh vào database (cần thêm logic xử lý)
-                // Ví dụ: tạo bản ghi trong bảng product_img và lấy ID
-                int productImgId = saveProductImages(imgPath1, imgPath2, imgPath3);
+                // Lưu thông tin ảnh vào database
+                int productImgId = saveProductImage(imgPath);
                 variation.setProductImgID(productImgId);
                 
                 // Gọi DAO để lưu variation
@@ -104,7 +107,7 @@ public class ManageVariationController extends HttpServlet {
                     response.sendRedirect(request.getContextPath() + "/manage-products?action=details&id="+ productId);
                 } else {
                     request.setAttribute("errorMessage", "Failed to add variation");
-                    request.getRequestDispatcher("/view/dashboard/admin/add-variation.jsp").forward(request, response);
+                    showAddVariationForm(request, response);
                 }
             } catch (Exception e) {
                 request.setAttribute("errorMessage", "Error adding variation: " + e.getMessage());
@@ -211,16 +214,51 @@ public class ManageVariationController extends HttpServlet {
         return "uploads/" + fileName;
     }
 
-    private int saveProductImages(String imgPath1, String imgPath2, String imgPath3) {
+    private int saveProductImage(String imgPath) {
         ProductImg productImg = new ProductImg();
-        productImg.setThumbnail(imgPath1); // Sử dụng ảnh đầu tiên làm thumbnail
-        productImg.setProductImg1(imgPath1);
-        productImg.setProductImg2(imgPath2);
-        productImg.setProductImg3(imgPath3);
-        productImg.setProductImgName("Variation Images");
+        productImg.setThumbnail(imgPath); // Set as thumbnail
+        productImg.setProductImg1(imgPath);
+        productImg.setProductImg2(null);
+        productImg.setProductImg3(null);
+        productImg.setProductImgName("Variation Image");
         
         ProductImgDAO productImgDAO = new ProductImgDAO();
         return productImgDAO.insert(productImg);
+    }
+
+    private void deleteVariation(HttpServletRequest request, HttpServletResponse response) 
+        throws ServletException, IOException {
+        try {
+            int variationId = Integer.parseInt(request.getParameter("variationId"));
+            
+            // Get the variation to find its productId for redirect
+            VariationDAO variationDAO = new VariationDAO();
+            Variation variation = variationDAO.findById(variationId);
+            
+            if (variation == null) {
+                request.getSession().setAttribute("errorMessage", "Variation not found");
+                response.sendRedirect(request.getContextPath() + "/manage-products");
+                return;
+            }
+            
+            int productId = variation.getProductID();
+            
+            // Delete the variation
+            boolean success = variationDAO.deleteById(variationId);
+            
+            if (success) {
+                request.getSession().setAttribute("successMessage", "Variation deleted successfully");
+            } else {
+                request.getSession().setAttribute("errorMessage", "Could not delete variation. It may be linked to existing orders.");
+            }
+            
+            // Redirect back to product details page
+            response.sendRedirect(request.getContextPath() + "/manage-products?action=details&id=" + productId);
+            
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("errorMessage", "Invalid variation ID");
+            response.sendRedirect(request.getContextPath() + "/manage-products");
+        }
     }
 
 }

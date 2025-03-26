@@ -4,7 +4,7 @@
  */
 package com.shop.swp391.controller.utils;
 
-import com.shop.swp391.config.GlobalConfig;
+import com.shop.swp391.Config.GlobalConfig;
 import com.shop.swp391.controller.authen.UserGoogleDto;
 import com.shop.swp391.entity.User;
 import java.util.Random;

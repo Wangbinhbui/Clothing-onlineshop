@@ -4,7 +4,7 @@
  */
 package com.shop.swp391.controller.authen;
 
-import com.shop.swp391.config.GlobalConfig;
+import com.shop.swp391.Config.GlobalConfig;
 import com.shop.swp391.controller.utils.EmailUtils;
 import com.shop.swp391.controller.utils.MD5PasswordEncoderUtils;
 import com.shop.swp391.dal.UserDAO;

@@ -58,22 +58,21 @@ public class SizeDAO extends DBContext implements I_DAO<Size>{
         );
     }
     
-    public Size findById(int id) {
-        Size size = null;
+    public Size findById(int sizeId) {
         String sql = "SELECT * FROM size WHERE size_ID = ?";
         try {
             connection = getConnection();
             statement = connection.prepareStatement(sql);
-            statement.setInt(1, id);
+            statement.setInt(1, sizeId);
             resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                size = getFromResultSet(resultSet);
+                return getFromResultSet(resultSet);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             closeResources();
         }
-        return size;
+        return null;
     }
 }

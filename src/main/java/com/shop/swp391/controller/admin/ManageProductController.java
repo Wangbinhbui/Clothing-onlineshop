@@ -8,10 +8,12 @@ import com.shop.swp391.dal.CategoryDAO;
 import com.shop.swp391.dal.CollectionDAO;
 import com.shop.swp391.dal.ProductDAO;
 import com.shop.swp391.dal.ProductImgDAO;
+import com.shop.swp391.dal.VariationDAO;
 import com.shop.swp391.entity.Category;
 import com.shop.swp391.entity.Collection;
 import com.shop.swp391.entity.Product;
 import com.shop.swp391.entity.ProductImg;
+import com.shop.swp391.entity.Variation;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -27,6 +29,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.nio.file.Paths;
 import java.util.UUID;
+import java.util.ArrayList;
 
 /**
  *
@@ -199,6 +202,10 @@ public class ManageProductController extends HttpServlet {
             CollectionDAO collectionDAO = new CollectionDAO();
             List<Collection> collections = collectionDAO.findAll();
             
+            // Fetch variations for this product
+            VariationDAO variationDAO = new VariationDAO();
+            List<Variation> variations = variationDAO.getVariationsByProductId(id);
+            
             // Thêm options cho trạng thái
             Map<Integer, String> statusOptions = new HashMap<>();
             statusOptions.put(1, "Active");
@@ -208,6 +215,8 @@ public class ManageProductController extends HttpServlet {
             request.setAttribute("categories", categories);
             request.setAttribute("collections", collections);
             request.setAttribute("statusOptions", statusOptions);
+            request.setAttribute("variations", variations);
+            request.setAttribute("variationDAO", variationDAO);
             
             request.getRequestDispatcher("view/dashboard/admin/product-details.jsp").forward(request, response);
         } catch (NumberFormatException e) {

@@ -8,10 +8,39 @@
         <title>Add Variation</title>
         <link rel="icon" type="image/png" href="assets/images/favicon.png" sizes="16x16">
         <jsp:include page="../../common/dashboard/css-dashboard.jsp"></jsp:include>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
     <body>
         <jsp:include page="../../common/dashboard/sidebar-dashboard.jsp"></jsp:include>
         <jsp:include page="../../common/dashboard/header-dashboard.jsp"></jsp:include>
+
+        <!-- Toast Container for Notifications -->
+        <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1050;">
+            <c:if test="${not empty successMessage}">
+                <div id="successToast" class="toast align-items-center text-white bg-success border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body d-flex align-items-center">
+                            <i class="fa fa-check-circle me-2" style="font-size: 1.2rem;"></i>
+                            <span>${successMessage}</span>
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+                <% session.removeAttribute("successMessage"); %>
+            </c:if>
+            <c:if test="${not empty errorMessage}">
+                <div id="errorToast" class="toast align-items-center text-white bg-danger border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body d-flex align-items-center">
+                            <i class="fa fa-exclamation-circle me-2" style="font-size: 1.2rem;"></i>
+                            <span>${errorMessage}</span>
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+                <% session.removeAttribute("errorMessage"); %>
+            </c:if>
+        </div>
 
         <div class="dashboard-main-body">
             <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
@@ -65,16 +94,9 @@
                                 </div>
                                 
                                 <div class="mb-3">
-                                    <label for="productImg1" class="form-label">Product Image 1</label>
-                                    <input type="file" class="form-control" id="productImg1" name="productImg1" accept="image/*" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="productImg2" class="form-label">Product Image 2</label>
-                                    <input type="file" class="form-control" id="productImg2" name="productImg2" accept="image/*">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="productImg3" class="form-label">Product Image 3</label>
-                                    <input type="file" class="form-control" id="productImg3" name="productImg3" accept="image/*">
+                                    <label for="productImg" class="form-label">Product Image</label>
+                                    <input type="file" class="form-control" id="productImg" name="productImg" accept="image/*" required>
+                                    <div class="form-text text-muted">Upload an image for this product variation (required)</div>
                                 </div>
                             </div>
                         </div>
@@ -89,5 +111,41 @@
         </div>
         
         <jsp:include page="../../common/dashboard/js-dashboard.jsp"></jsp:include>
+        
+        <!-- Toast initialization script -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Initialize and show toasts if they exist
+                var successToast = document.getElementById('successToast');
+                var errorToast = document.getElementById('errorToast');
+                
+                // Toast options
+                var toastOptions = {
+                    delay: 4500,
+                    animation: true,
+                    autohide: true
+                };
+                
+                if (successToast) {
+                    var toast = new bootstrap.Toast(successToast, toastOptions);
+                    toast.show();
+                    
+                    // Auto remove toast element after hiding
+                    successToast.addEventListener('hidden.bs.toast', function() {
+                        successToast.remove();
+                    });
+                }
+                
+                if (errorToast) {
+                    var toast = new bootstrap.Toast(errorToast, toastOptions);
+                    toast.show();
+                    
+                    // Auto remove toast element after hiding
+                    errorToast.addEventListener('hidden.bs.toast', function() {
+                        errorToast.remove();
+                    });
+                }
+            });
+        </script>
     </body>
 </html> 

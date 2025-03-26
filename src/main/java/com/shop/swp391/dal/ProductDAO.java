@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -112,15 +114,15 @@ public class ProductDAO extends DBContext implements I_DAO<Product> {
 
     @Override
     public Product getFromResultSet(ResultSet rs) throws SQLException {
-        Product product = new Product();
-        product.setProductID(rs.getInt("ProductID"));
-        product.setCategoryID(rs.getInt("CategoryID"));
-        product.setProductName(rs.getString("ProductName"));
-        product.setPrice(rs.getDouble("Price"));
-        product.setCollectionID(rs.getInt("CollectionID"));
-        product.setDescription(rs.getString("description"));
-        product.setStatus(rs.getInt("status"));
-        return product;
+        return Product.builder()
+                .productID(rs.getInt("ProductID"))
+                .categoryID(rs.getInt("CategoryID"))
+                .productName(rs.getString("ProductName"))
+                .price(rs.getDouble("Price"))
+                .collectionID(rs.getInt("CollectionID"))
+                .description(rs.getString("Description"))
+                .status(rs.getInt("status"))
+                .build();
     }
 
     public Product getProductById(int id) {
@@ -576,6 +578,30 @@ public class ProductDAO extends DBContext implements I_DAO<Product> {
         }
     }
 
+    /**
+     * Alias method: Lấy thông tin Product theo ID.
+     */
+    public Product getById(int id) {
+        String sql = "SELECT * FROM product WHERE ProductID = ?";
+        
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, id);
+            resultSet = statement.executeQuery();
+            
+            if (resultSet.next()) {
+                return getFromResultSet(resultSet);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, "Error getting product by ID", ex);
+        } finally {
+            closeResources();
+        }
+        
+        return null;
+    }
+
     public static void main(String[] args) {
         ProductDAO productDAO = new ProductDAO();
 
@@ -596,5 +622,417 @@ public class ProductDAO extends DBContext implements I_DAO<Product> {
         }
     }
 
+    /**
+     * Search products with all filter options
+     * @param searchQuery Search keywords for product name
+     * @param page Current page number
+     * @param pageSize Items per page
+     * @param sortBy Sorting option (name_asc, name_desc, price_asc, price_desc)
+     * @param minPrice Minimum price filter
+     * @param maxPrice Maximum price filter
+     * @param colorName Color name filter
+     * @return List of products matching the criteria
+     */
+    public List<Product> searchProducts(String searchQuery, int page, int pageSize, String sortBy, 
+                                       Double minPrice, Double maxPrice, String colorName) {
+        List<Product> products = new ArrayList<>();
+        int offset = (page - 1) * pageSize;
+        
+        StringBuilder sql = new StringBuilder("SELECT DISTINCT p.* FROM product p");
+        
+        // Join with variation and color if color filter is provided
+        if (colorName != null && !colorName.isEmpty()) {
+            sql.append(" JOIN variation v ON p.ProductID = v.ProductID");
+            sql.append(" JOIN color c ON v.color_ID = c.color_ID");
+        }
+        
+        sql.append(" WHERE 1=1");
+        
+        // Add search condition if searchQuery is provided
+        if (searchQuery != null && !searchQuery.isEmpty()) {
+            sql.append(" AND p.ProductName LIKE ?");
+        }
+        
+        // Add price range conditions
+        if (minPrice != null) {
+            sql.append(" AND p.Price >= ?");
+        }
+        
+        if (maxPrice != null) {
+            sql.append(" AND p.Price <= ?");
+        }
+        
+        // Add color condition
+        if (colorName != null && !colorName.isEmpty()) {
+            sql.append(" AND c.color_name = ?");
+        }
+        
+        // Add sorting
+        if (sortBy != null) {
+            switch (sortBy) {
+                case "name_asc":
+                    sql.append(" ORDER BY p.ProductName ASC");
+                    break;
+                case "name_desc":
+                    sql.append(" ORDER BY p.ProductName DESC");
+                    break;
+                case "price_asc":
+                    sql.append(" ORDER BY p.Price ASC");
+                    break;
+                case "price_desc":
+                    sql.append(" ORDER BY p.Price DESC");
+                    break;
+                default:
+                    sql.append(" ORDER BY p.ProductID DESC");
+                    break;
+            }
+        } else {
+            sql.append(" ORDER BY p.ProductID DESC");
+        }
+        
+        // Add pagination
+        sql.append(" LIMIT ? OFFSET ?");
+        
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql.toString());
+            
+            int paramIndex = 1;
+            
+            // Set parameters
+            if (searchQuery != null && !searchQuery.isEmpty()) {
+                statement.setString(paramIndex++, "%" + searchQuery + "%");
+            }
+            
+            if (minPrice != null) {
+                statement.setDouble(paramIndex++, minPrice);
+            }
+            
+            if (maxPrice != null) {
+                statement.setDouble(paramIndex++, maxPrice);
+            }
+            
+            if (colorName != null && !colorName.isEmpty()) {
+                statement.setString(paramIndex++, colorName);
+            }
+            
+            statement.setInt(paramIndex++, pageSize);
+            statement.setInt(paramIndex, offset);
+            
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                products.add(getFromResultSet(resultSet));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error in searchProducts: " + e.getMessage());
+        } finally {
+            closeResources();
+        }
+        
+        return products;
+    }
+    
+    /**
+     * Count total products matching search criteria and filters
+     * @param searchQuery Search keywords for product name
+     * @param minPrice Minimum price filter
+     * @param maxPrice Maximum price filter
+     * @param colorName Color name filter
+     * @return Total count of matching products
+     */
+    public int countSearchProductsWithFilters(String searchQuery, Double minPrice, Double maxPrice, String colorName) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(DISTINCT p.ProductID) FROM product p");
+        
+        // Join with variation and color if color filter is provided
+        if (colorName != null && !colorName.isEmpty()) {
+            sql.append(" JOIN variation v ON p.ProductID = v.ProductID");
+            sql.append(" JOIN color c ON v.color_ID = c.color_ID");
+        }
+        
+        sql.append(" WHERE 1=1");
+        
+        // Add search condition if searchQuery is provided
+        if (searchQuery != null && !searchQuery.isEmpty()) {
+            sql.append(" AND p.ProductName LIKE ?");
+        }
+        
+        // Add price range conditions
+        if (minPrice != null) {
+            sql.append(" AND p.Price >= ?");
+        }
+        
+        if (maxPrice != null) {
+            sql.append(" AND p.Price <= ?");
+        }
+        
+        // Add color condition
+        if (colorName != null && !colorName.isEmpty()) {
+            sql.append(" AND c.color_name = ?");
+        }
+        
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql.toString());
+            
+            int paramIndex = 1;
+            
+            // Set parameters
+            if (searchQuery != null && !searchQuery.isEmpty()) {
+                statement.setString(paramIndex++, "%" + searchQuery + "%");
+            }
+            
+            if (minPrice != null) {
+                statement.setDouble(paramIndex++, minPrice);
+            }
+            
+            if (maxPrice != null) {
+                statement.setDouble(paramIndex++, maxPrice);
+            }
+            
+            if (colorName != null && !colorName.isEmpty()) {
+                statement.setString(paramIndex, colorName);
+            }
+            
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error in countSearchProductsWithFilters: " + e.getMessage());
+        } finally {
+            closeResources();
+        }
+        
+        return 0;
+    }
+
+    /**
+     * Get the minimum price among all products
+     * @return The minimum price or 0 if no products found
+     */
+    public double getMinProductPrice() {
+        String sql = "SELECT MIN(Price) FROM product WHERE status = 1";
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getDouble(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error in getMinProductPrice: " + e.getMessage());
+        } finally {
+            closeResources();
+        }
+        return 0.0; // Default minimum price if no products found
+    }
+    
+    /**
+     * Get the maximum price among all products
+     * @return The maximum price or 1000000 if no products found
+     */
+    public double getMaxProductPrice() {
+        String sql = "SELECT MAX(Price) FROM product WHERE status = 1";
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getDouble(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error in getMaxProductPrice: " + e.getMessage());
+        } finally {
+            closeResources();
+        }
+        return 1000000.0; // Default maximum price if no products found
+    }
+
+    /**
+     * Search products with all filter options, using colorId instead of color name
+     * @param searchQuery Search keywords for product name
+     * @param page Current page number
+     * @param pageSize Items per page
+     * @param sortBy Sorting option (name_asc, name_desc, price_asc, price_desc)
+     * @param minPrice Minimum price filter
+     * @param maxPrice Maximum price filter
+     * @param colorId Color ID filter
+     * @return List of products matching the criteria
+     */
+    public List<Product> searchProductsWithFilters(String searchQuery, int page, int pageSize, String sortBy, 
+                                       Double minPrice, Double maxPrice, Integer colorId) {
+        List<Product> products = new ArrayList<>();
+        int offset = (page - 1) * pageSize;
+        
+        StringBuilder sql = new StringBuilder("SELECT DISTINCT p.* FROM product p");
+        
+        // Join with variation if color filter is provided
+        if (colorId != null) {
+            sql.append(" JOIN variation v ON p.ProductID = v.ProductID");
+        }
+        
+        sql.append(" WHERE 1=1");
+        
+        // Add search condition if searchQuery is provided
+        if (searchQuery != null && !searchQuery.isEmpty()) {
+            sql.append(" AND p.ProductName LIKE ?");
+        }
+        
+        // Add price range conditions
+        if (minPrice != null) {
+            sql.append(" AND p.Price >= ?");
+        }
+        
+        if (maxPrice != null) {
+            sql.append(" AND p.Price <= ?");
+        }
+        
+        // Add color condition
+        if (colorId != null) {
+            sql.append(" AND v.color_ID = ?");
+        }
+        
+        // Add sorting
+        if (sortBy != null) {
+            switch (sortBy) {
+                case "name_asc":
+                    sql.append(" ORDER BY p.ProductName ASC");
+                    break;
+                case "name_desc":
+                    sql.append(" ORDER BY p.ProductName DESC");
+                    break;
+                case "price_asc":
+                    sql.append(" ORDER BY p.Price ASC");
+                    break;
+                case "price_desc":
+                    sql.append(" ORDER BY p.Price DESC");
+                    break;
+                default:
+                    sql.append(" ORDER BY p.ProductID DESC");
+                    break;
+            }
+        } else {
+            sql.append(" ORDER BY p.ProductID DESC");
+        }
+        
+        sql.append(" LIMIT ? OFFSET ?");
+        
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql.toString());
+            
+            int paramIndex = 1;
+            
+            // Set parameters
+            if (searchQuery != null && !searchQuery.isEmpty()) {
+                statement.setString(paramIndex++, "%" + searchQuery + "%");
+            }
+            
+            if (minPrice != null) {
+                statement.setDouble(paramIndex++, minPrice);
+            }
+            
+            if (maxPrice != null) {
+                statement.setDouble(paramIndex++, maxPrice);
+            }
+            
+            if (colorId != null) {
+                statement.setInt(paramIndex++, colorId);
+            }
+            
+            statement.setInt(paramIndex++, pageSize);
+            statement.setInt(paramIndex, offset);
+            
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                products.add(getFromResultSet(resultSet));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error in searchProductsWithFilters: " + e.getMessage());
+        } finally {
+            closeResources();
+        }
+        
+        return products;
+    }
+    
+    /**
+     * Count total products matching search criteria and filters, using colorId instead of color name
+     * @param searchQuery Search keywords for product name
+     * @param minPrice Minimum price filter
+     * @param maxPrice Maximum price filter
+     * @param colorId Color ID filter
+     * @return Total count of matching products
+     */
+    public int countProductsWithFilters(String searchQuery, Double minPrice, Double maxPrice, Integer colorId) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(DISTINCT p.ProductID) FROM product p");
+        
+        // Join with variation if color filter is provided
+        if (colorId != null) {
+            sql.append(" JOIN variation v ON p.ProductID = v.ProductID");
+        }
+        
+        sql.append(" WHERE 1=1");
+        
+        // Add search condition if searchQuery is provided
+        if (searchQuery != null && !searchQuery.isEmpty()) {
+            sql.append(" AND p.ProductName LIKE ?");
+        }
+        
+        // Add price range conditions
+        if (minPrice != null) {
+            sql.append(" AND p.Price >= ?");
+        }
+        
+        if (maxPrice != null) {
+            sql.append(" AND p.Price <= ?");
+        }
+        
+        // Add color condition
+        if (colorId != null) {
+            sql.append(" AND v.color_ID = ?");
+        }
+        
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql.toString());
+            
+            int paramIndex = 1;
+            
+            // Set parameters
+            if (searchQuery != null && !searchQuery.isEmpty()) {
+                statement.setString(paramIndex++, "%" + searchQuery + "%");
+            }
+            
+            if (minPrice != null) {
+                statement.setDouble(paramIndex++, minPrice);
+            }
+            
+            if (maxPrice != null) {
+                statement.setDouble(paramIndex++, maxPrice);
+            }
+            
+            if (colorId != null) {
+                statement.setInt(paramIndex, colorId);
+            }
+            
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error in countProductsWithFilters: " + e.getMessage());
+        } finally {
+            closeResources();
+        }
+        
+        return 0;
+    }
 
 }

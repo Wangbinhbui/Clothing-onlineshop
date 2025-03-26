@@ -1,6 +1,6 @@
 package com.shop.swp391.controller.utils;
 
-import com.shop.swp391.config.GlobalConfig;
+import com.shop.swp391.Config.GlobalConfig;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;

@@ -38,42 +38,67 @@ public class ProductImgDAO extends DBContext implements I_DAO<ProductImg> {
 
     @Override
     public boolean update(ProductImg t) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String sql = "UPDATE product_img SET thumbnail = ?, product_img_1 = ?, product_img_2 = ?, product_img_3 = ?, product_img_name = ? WHERE product_img_ID = ?";
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql);
+            statement.setString(1, t.getThumbnail());
+            statement.setString(2, t.getProductImg1());
+            statement.setString(3, t.getProductImg2());
+            statement.setString(4, t.getProductImg3());
+            statement.setString(5, t.getProductImgName());
+            statement.setInt(6, t.getProductImgID());
+            int affectedRows = statement.executeUpdate();
+            return affectedRows > 0;
+        } catch (SQLException ex) {
+            System.out.println("Error updating ProductImg: " + ex.getMessage());
+            return false;
+        } finally {
+            closeResources();
+        }
     }
 
     @Override
     public boolean delete(ProductImg t) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String sql = "DELETE FROM product_img WHERE product_img_ID = ?";
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, t.getProductImgID());
+            int affectedRows = statement.executeUpdate();
+            return affectedRows > 0;
+        } catch (SQLException ex) {
+            System.out.println("Error deleting ProductImg: " + ex.getMessage());
+            return false;
+        } finally {
+            closeResources();
+        }
     }
 
     @Override
-    public int insert(ProductImg productImg) {
-        String sql = "INSERT INTO product_img (thumbnail, product_img_1, product_img_2, product_img_3, product_img_name) "
-                   + "VALUES (?, ?, ?, ?, ?)";
+    public int insert(ProductImg t) {
+        String sql = "INSERT INTO product_img (thumbnail, product_img_1, product_img_2, product_img_3, product_img_name) VALUES (?, ?, ?, ?, ?)";
         try {
             connection = getConnection();
+            // Sử dụng Statement.RETURN_GENERATED_KEYS để lấy id tự tăng
             statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            statement.setString(1, productImg.getThumbnail());
-            statement.setString(2, productImg.getProductImg1());
-            statement.setString(3, productImg.getProductImg2());
-            statement.setString(4, productImg.getProductImg3());
-            statement.setString(5, productImg.getProductImgName());
-            
+            statement.setString(1, t.getThumbnail());
+            statement.setString(2, t.getProductImg1());
+            statement.setString(3, t.getProductImg2());
+            statement.setString(4, t.getProductImg3());
+            statement.setString(5, t.getProductImgName());
             int affectedRows = statement.executeUpdate();
-            
             if (affectedRows == 0) {
-                throw new SQLException("Creating product image failed, no rows affected.");
+                throw new SQLException("Creating ProductImg failed, no rows affected.");
             }
-            
-            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    return generatedKeys.getInt(1);
-                } else {
-                    throw new SQLException("Creating product image failed, no ID obtained.");
-                }
+            resultSet = statement.getGeneratedKeys();
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            } else {
+                throw new SQLException("Creating ProductImg failed, no ID obtained.");
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException ex) {
+            System.out.println("Error inserting ProductImg: " + ex.getMessage());
             return -1;
         } finally {
             closeResources();
@@ -93,7 +118,10 @@ public class ProductImgDAO extends DBContext implements I_DAO<ProductImg> {
     }
 
     public String getProductThumbnail(int productId) {
-        String sql = "SELECT thumbnail FROM product_img WHERE ProductID = ? LIMIT 1";
+        String sql = "SELECT pi.thumbnail FROM product_img pi " +
+                   "JOIN variation v ON pi.product_img_ID = v.product_img_ID " +
+                   "WHERE v.ProductID = ? " +
+                   "LIMIT 1";
         try {
             connection = getConnection();
             statement = connection.prepareStatement(sql);
@@ -103,6 +131,7 @@ public class ProductImgDAO extends DBContext implements I_DAO<ProductImg> {
                 return resultSet.getString("thumbnail");
             }
         } catch (SQLException ex) {
+            System.out.println("Error getting product thumbnail: " + ex.getMessage());
             ex.printStackTrace();
         } finally {
             closeResources();
@@ -117,7 +146,10 @@ public class ProductImgDAO extends DBContext implements I_DAO<ProductImg> {
      */
     public List<String> getProductImages(int productId) {
         List<String> images = new ArrayList<>();
-        String sql = "SELECT thumbnail, product_img_1, product_img_2, product_img_3 FROM product_img WHERE ProductID = ?";
+        String sql = "SELECT pi.thumbnail, pi.product_img_1, pi.product_img_2, pi.product_img_3 " +
+                   "FROM product_img pi " +
+                   "JOIN variation v ON pi.product_img_ID = v.product_img_ID " +
+                   "WHERE v.ProductID = ?";
         try {
             connection = getConnection();
             statement = connection.prepareStatement(sql);
@@ -191,5 +223,58 @@ public class ProductImgDAO extends DBContext implements I_DAO<ProductImg> {
         } finally {
             closeResources();
         }
+    }
+
+    /**
+     * Get a product thumbnail for a specific product ID and color ID
+     * 
+     * @param productId The product ID
+     * @param colorId The color ID
+     * @return The thumbnail path or default.jpg if not found
+     */
+    public String getProductThumbnailByColor(int productId, int colorId) {
+        String sql = "SELECT pi.thumbnail FROM product_img pi " +
+                    "JOIN variation v ON pi.product_img_ID = v.product_img_ID " +
+                    "WHERE v.ProductID = ? AND v.color_ID = ? " +
+                    "LIMIT 1";
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, productId);
+            statement.setInt(2, colorId);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getString("thumbnail");
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error getting product thumbnail by color: " + ex.getMessage());
+            ex.printStackTrace();
+        } finally {
+            closeResources();
+        }
+        return getProductThumbnail(productId); // Fallback to any thumbnail for this product
+    }
+    
+    /**
+     * Get a ProductImg by its ID
+     * @param id The product_img_ID
+     * @return The ProductImg object or null if not found
+     */
+    public ProductImg getById(int id) {
+        String sql = "SELECT * FROM product_img WHERE product_img_ID = ?";
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, id);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return getFromResultSet(resultSet);
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error getting ProductImg by id: " + ex.getMessage());
+        } finally {
+            closeResources();
+        }
+        return null;
     }
 }

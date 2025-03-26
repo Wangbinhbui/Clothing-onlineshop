@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import com.shop.swp391.config.GlobalConfig;
+import com.shop.swp391.Config.GlobalConfig;
 import com.shop.swp391.entity.User;
 import com.shop.swp391.dal.UserDAO;
 import com.shop.swp391.controller.utils.MD5PasswordEncoderUtils;

@@ -5,7 +5,7 @@
 package com.shop.swp391.dal;
 
 import com.shop.swp391.dal.I_DAO;
-import com.shop.swp391.config.GlobalConfig;
+import com.shop.swp391.Config.GlobalConfig;
 import com.shop.swp391.entity.User;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -135,13 +135,13 @@ public class UserDAO extends DBContext implements I_DAO<User> {
             statement.setInt(8, user.getRoleId());
             statement.setString(9, user.getPhone());
             statement.setBoolean(10, user.isActive());
-
+            
             int affectedRows = statement.executeUpdate();
-
+            
             if (affectedRows == 0) {
                 throw new SQLException("Creating account failed, no rows affected.");
             }
-
+            
             resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
                 return resultSet.getInt(1);
@@ -198,8 +198,9 @@ public class UserDAO extends DBContext implements I_DAO<User> {
         }
 
         if (searchFilter != null && !searchFilter.trim().isEmpty()) {
-            sql.append(" AND Email LIKE ? OR Phone LIKE ? OR FirstName LIKE ? OR LastName LIKE ?");
+            sql.append(" AND (Email LIKE ? OR Phone LIKE ? OR FirstName LIKE ? OR LastName LIKE ? OR CONCAT(FirstName, ' ', LastName) LIKE ?)");
             String searchPatterns = "%" + searchFilter.trim() + "%";
+            params.add(searchPatterns);
             params.add(searchPatterns);
             params.add(searchPatterns);
             params.add(searchPatterns);
@@ -249,8 +250,9 @@ public class UserDAO extends DBContext implements I_DAO<User> {
         }
 
         if (searchFilter != null && !searchFilter.trim().isEmpty()) {
-            sql.append(" AND Email LIKE ? OR Phone LIKE ? OR FirstName LIKE ? OR LastName LIKE ?");
+            sql.append(" AND (Email LIKE ? OR Phone LIKE ? OR FirstName LIKE ? OR LastName LIKE ? OR CONCAT(FirstName, ' ', LastName) LIKE ?)");
             String searchPatterns = "%" + searchFilter.trim() + "%";
+            params.add(searchPatterns);
             params.add(searchPatterns);
             params.add(searchPatterns);
             params.add(searchPatterns);
@@ -305,8 +307,9 @@ public class UserDAO extends DBContext implements I_DAO<User> {
         }
 
         if (searchFilter != null && !searchFilter.trim().isEmpty()) {
-            sql.append(" AND Email LIKE ? OR Phone LIKE ? OR FirstName LIKE ? OR LastName LIKE ?");
+            sql.append(" AND (Email LIKE ? OR Phone LIKE ? OR FirstName LIKE ? OR LastName LIKE ? OR CONCAT(FirstName, ' ', LastName) LIKE ?)");
             String searchPattern = "%" + searchFilter.trim() + "%";
+            params.add(searchPattern);
             params.add(searchPattern);
             params.add(searchPattern);
             params.add(searchPattern);
@@ -351,8 +354,9 @@ public class UserDAO extends DBContext implements I_DAO<User> {
         }
 
         if (searchFilter != null && !searchFilter.trim().isEmpty()) {
-            sql.append(" AND Email LIKE ? OR Phone LIKE ? OR FirstName LIKE ? OR LastName LIKE ?");
+            sql.append(" AND (Email LIKE ? OR Phone LIKE ? OR FirstName LIKE ? OR LastName LIKE ? OR CONCAT(FirstName, ' ', LastName) LIKE ?)");
             String searchPattern = "%" + searchFilter.trim() + "%";
+            params.add(searchPattern);
             params.add(searchPattern);
             params.add(searchPattern);
             params.add(searchPattern);
