@@ -18,6 +18,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import com.shop.swp391.entity.Variation;
+import java.util.ArrayList;
+import com.shop.swp391.entity.ProductImg;
 
 /**
  *
@@ -52,7 +57,6 @@ public class ProductDetailController extends HttpServlet {
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -82,13 +86,86 @@ public class ProductDetailController extends HttpServlet {
                 response.sendRedirect("productlist.jsp");
                 return;
             }
-            String productThumbnail = productImgDAO.getProductThumbnail(productId);
+            
+            // Get color variants
             List<Color> colors = productDAO.getAvailableColors(productId);
+            
+            // Get size variants
             List<Size> sizes = productDAO.getAvailableSizes(productId);
+            
+            // Xác định màu và kích thước mặc định (lấy phần tử đầu tiên)
+            int defaultColorId = colors.isEmpty() ? 0 : colors.get(0).getColorID();
+            int defaultSizeId = sizes.isEmpty() ? 0 : sizes.get(0).getSizeID();
+            
+            // Lấy variation mặc định
+            Variation defaultVariation = variationDAO.findByProductColorSize(productId, defaultColorId, defaultSizeId);
+            
+            // Get product images ONLY for default variation
+            List<String> productImages = new ArrayList<>();
+            if (defaultVariation != null) {
+                // Get images from the product_img table for this specific variation
+                int imgId = defaultVariation.getProductImgID();
+                ProductImg productImg = productImgDAO.getById(imgId);
+                if (productImg != null) {
+                    if (productImg.getThumbnail() != null && !productImg.getThumbnail().isEmpty())
+                        productImages.add(productImg.getThumbnail());
+                    if (productImg.getProductImg1() != null && !productImg.getProductImg1().isEmpty())
+                        productImages.add(productImg.getProductImg1());
+                    if (productImg.getProductImg2() != null && !productImg.getProductImg2().isEmpty())
+                        productImages.add(productImg.getProductImg2());
+                    if (productImg.getProductImg3() != null && !productImg.getProductImg3().isEmpty())
+                        productImages.add(productImg.getProductImg3());
+                }
+            }
+            
+            // Get default thumbnail
+            String productThumbnail = !productImages.isEmpty() ? productImages.get(0) : "default.jpg";
+            
+            // Get color-specific thumbnails
+            Map<Integer, String> colorThumbnails = new HashMap<>();
+            for (Color color : colors) {
+                colorThumbnails.put(color.getColorID(), 
+                    productImgDAO.getProductThumbnailByColor(productId, color.getColorID()));
+            }
+            
+            // Get available variations for this product (to show stock status)
+            Map<String, Integer> variationStockMap = new HashMap<>();
+            for (Color color : colors) {
+                for (Size size : sizes) {
+                    Variation variation = variationDAO.findByProductColorSize(productId, color.getColorID(), size.getSizeID());
+                    if (variation != null) {
+                        String key = color.getColorID() + "-" + size.getSizeID();
+                        variationStockMap.put(key, variation.getQtyInStock());
+                    }
+                }
+            }
+            
+            // Tạo mapping: Màu -> ProductImgID
+            Map<Integer, Integer> colorToImgMap = new HashMap<>();
+            for (Color color : colors) {
+                // Lấy variation đầu tiên của màu này để lấy productImgID
+                Variation variation = variationDAO.findByProductColorSize(productId, color.getColorID(), defaultSizeId);
+                if (variation != null) {
+                    colorToImgMap.put(color.getColorID(), variation.getProductImgID());
+                }
+            }
+            
+            // Set all attributes for JSP
             request.setAttribute("product", product);
-            request.setAttribute("productThumbnail", productThumbnail);
+            request.setAttribute("thumbnail", productThumbnail);
+            request.setAttribute("productImages", productImages);
             request.setAttribute("colors", colors);
-            request.setAttribute("sizes", sizes);           
+            request.setAttribute("sizes", sizes);
+            request.setAttribute("colorThumbnails", colorThumbnails);
+            request.setAttribute("variationStock", variationStockMap);
+            request.setAttribute("defaultColorId", defaultColorId);
+            request.setAttribute("defaultSizeId", defaultSizeId);
+            request.setAttribute("colorToImgMap", colorToImgMap);
+            
+            // Pass DAOs to JSP for additional queries
+            request.setAttribute("variationDAO", variationDAO);
+            request.setAttribute("productImgDAO", productImgDAO);
+            
             request.getRequestDispatcher("view/homepage/productdetails.jsp").forward(request, response);
         } catch (NumberFormatException e) {
             response.sendRedirect("productlist.jsp");
