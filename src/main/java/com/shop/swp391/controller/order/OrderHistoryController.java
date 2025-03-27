@@ -92,8 +92,15 @@ public class OrderHistoryController extends HttpServlet {
         // Get status filter if exists
         String statusFilter = request.getParameter("status");
         
+        // Debug log
+        System.out.println("Status filter: " + statusFilter);
+        
         ShopOrderDAO shopOrderDAO = new ShopOrderDAO();
         List<ShopOrder> orders = shopOrderDAO.getOrdersByUserIdWithPagination(user.getId(), statusFilter, page, pageSize);
+        
+        // Debug log
+        System.out.println("Orders found: " + orders.size());
+        
         int totalOrders = shopOrderDAO.getTotalOrdersByUserId(user.getId(), statusFilter);
         int totalPages = (int) Math.ceil((double) totalOrders / pageSize);
         
@@ -102,13 +109,14 @@ public class OrderHistoryController extends HttpServlet {
         request.setAttribute("totalPages", totalPages);
         request.setAttribute("statusFilter", statusFilter);
         
-        // Get order status map for display
+        // Get order status map for display - add Cancelled status
         Map<Integer, String> orderStatusMap = new HashMap<>();
         orderStatusMap.put(1, "Pending");
-        orderStatusMap.put(2, "Prepared Order");
-        orderStatusMap.put(3, "Package Order");
+        orderStatusMap.put(2, "Prepared");
+        orderStatusMap.put(3, "Packaged");
         orderStatusMap.put(4, "Delivering");
         orderStatusMap.put(5, "Successfully");
+        orderStatusMap.put(6, "Cancelled"); // Add Cancelled status
         
         request.setAttribute("orderStatusMap", orderStatusMap);
         
@@ -163,8 +171,8 @@ public class OrderHistoryController extends HttpServlet {
             // Get order status map for display
             Map<Integer, String> orderStatusMap = new HashMap<>();
             orderStatusMap.put(1, "Pending");
-            orderStatusMap.put(2, "Prepared Order");
-            orderStatusMap.put(3, "Package Order");
+            orderStatusMap.put(2, "Prepared");
+            orderStatusMap.put(3, "Packaged");
             orderStatusMap.put(4, "Delivering");
             orderStatusMap.put(5, "Successfully");
             
