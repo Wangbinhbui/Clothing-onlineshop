@@ -7,6 +7,7 @@ package com.shop.swp391.dal;
 import com.shop.swp391.entity.Color;
 import com.shop.swp391.entity.Size;
 import com.shop.swp391.entity.Variation;
+import com.shop.swp391.entity.ProductImg;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,6 +15,8 @@ import java.util.List;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import com.shop.swp391.dal.ProductDAO;
+import com.shop.swp391.dal.ProductImgDAO;
 
 /**
  *
@@ -42,7 +45,26 @@ public class VariationDAO extends DBContext implements I_DAO<Variation> {
 
     @Override
     public boolean update(Variation t) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String sql = "UPDATE variation SET ProductID = ?, color_ID = ?, size_ID = ?, qty_in_stock = ?, product_img_ID = ? WHERE variationID = ?";
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, t.getProductID());
+            statement.setInt(2, t.getColorID());
+            statement.setInt(3, t.getSizeID());
+            statement.setInt(4, t.getQtyInStock());
+            statement.setInt(5, t.getProductImgID());
+            statement.setInt(6, t.getVariationID());
+            
+            int rowsAffected = statement.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            System.out.println("Error updating variation: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        } finally {
+            closeResources();
+        }
     }
 
     @Override
@@ -513,5 +535,173 @@ public class VariationDAO extends DBContext implements I_DAO<Variation> {
     public String getProductNamebyId(int productID) {
         ProductDAO pDAO = new ProductDAO();
         return pDAO.getProductById(productID).getProductName();
+    }
+
+    // Method to get variations for a specific product
+    public List<Variation> getVariationsByProductId(int productId) {
+        List<Variation> variations = new ArrayList<>();
+        String sql = "SELECT * FROM variation WHERE ProductID = ?";
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, productId);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                variations.add(getFromResultSet(resultSet));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+        return variations;
+    }
+
+    // Method to delete a variation by ID
+    public boolean deleteById(int variationId) {
+        // First check if variation is used in any orders
+        if (isVariationUsedInOrders(variationId)) {
+            return false;
+        }
+        
+        try {
+            // Get variation details first
+            Variation variation = findById(variationId);
+            if (variation == null) {
+                return false;
+            }
+            
+            // Store the product image ID for later deletion
+            int productImgId = variation.getProductImgID();
+            
+            // Delete the variation
+            connection = getConnection();
+            statement = connection.prepareStatement("DELETE FROM variation WHERE VariationID = ?");
+            statement.setInt(1, variationId);
+            
+            int affectedRows = statement.executeUpdate();
+            
+            // If successfully deleted variation, also delete the associated product image
+            if (affectedRows > 0 && productImgId > 0) {
+                try {
+                    // Check if the productImgId is used by other variations
+                    if (!isProductImgUsedByOtherVariations(productImgId, variationId)) {
+                        closeResources(); // Close the current connection
+                        
+                        // Delete the product image
+                        ProductImgDAO productImgDAO = new ProductImgDAO();
+                        // Create a ProductImg object with the ID
+                        ProductImg productImg = new ProductImg();
+                        productImg.setProductImgID(productImgId);
+                        productImgDAO.delete(productImg);
+                    }
+                } catch (Exception e) {
+                    // Log error but continue - the variation was already deleted
+                    e.printStackTrace();
+                }
+            }
+            
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            closeResources();
+        }
+    }
+    
+    // Helper method to check if variation is used in orders
+    private boolean isVariationUsedInOrders(int variationId) {
+        String sql = "SELECT COUNT(*) FROM orderdetails WHERE VariationID = ?";
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, variationId);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+        return false;
+    }
+
+    // Helper method to check if product image is used by other variations
+    private boolean isProductImgUsedByOtherVariations(int productImgId, int excludedVariationId) {
+        String sql = "SELECT COUNT(*) FROM variation WHERE product_img_ID = ? AND VariationID != ?";
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, productImgId);
+            statement.setInt(2, excludedVariationId);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+        return false;
+    }
+
+    /**
+     * Find a variation by product ID, color ID, and size ID
+     * 
+     * @param productId The product ID
+     * @param colorId The color ID
+     * @param sizeId The size ID
+     * @return The Variation object or null if not found
+     */
+    public Variation findByProductColorSize(int productId, int colorId, int sizeId) {
+        String sql = "SELECT * FROM variation WHERE ProductID = ? AND color_ID = ? AND size_ID = ?";
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, productId);
+            statement.setInt(2, colorId);
+            statement.setInt(3, sizeId);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return getFromResultSet(resultSet);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error finding variation: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+        return null;
+    }
+
+    /**
+     * Updates only the stock quantity of a variation
+     * This is more efficient than updating all fields when only quantity needs to be changed
+     * 
+     * @param variationId The ID of the variation to update
+     * @param newQuantity The new quantity in stock
+     * @return true if updated successfully, false otherwise
+     */
+    public boolean updateStockQuantity(int variationId, int newQuantity) {
+        String sql = "UPDATE variation SET qty_in_stock = ? WHERE variationID = ?";
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, newQuantity);
+            statement.setInt(2, variationId);
+            
+            int rowsAffected = statement.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            System.out.println("Error updating stock quantity: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        } finally {
+            closeResources();
+        }
     }
 }

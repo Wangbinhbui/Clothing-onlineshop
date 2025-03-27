@@ -53,11 +53,11 @@
 
                                 <div class="input-box mb-20">
                                     <label class="control-label">E-Mail / Username</label>
-                                    <input type="text" placeholder="E-Mail or Username" name="username" class="info" required>
+                                    <input type="text" placeholder="E-Mail or Username" name="username" value="admin" class="info" required>
                                 </div>
                                 <div class="input-box">
                                     <label class="control-label">Password</label>
-                                    <input type="password" placeholder="Password" name="password" class="info" required>
+                                    <input type="password" placeholder="Password" name="password" class="info" value="123" required>
                                 </div>
                             </div>
                             <div class="frm-action">

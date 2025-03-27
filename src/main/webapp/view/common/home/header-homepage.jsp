@@ -40,55 +40,12 @@
                 <div class="col-md-3 col-sm-6 col-6">
                     <div class="cart-currency-area login-register-area text-end">
                         <ul>
-                            <li>
-                                <div class="header-currency">
-                                    <select>
-                                        <option value="1">USD</option>
-                                        <option value="2">Pound</option>
-                                        <option value="3">Euro</option>
-                                        <option value="4">Dinar</option>
-                                    </select>
-                                </div>
-                            </li>
+                           
                             <li>
                                 <div class="header-cart">
                                     <div class="cart-icon"> <a href="${pageContext.request.contextPath}/cart">Cart<i
-                                                class="zmdi zmdi-shopping-cart"></i></a> <span>2</span> </div>
-                                    <div class="cart-content-wraper">
-                                        <div class="cart-single-wraper">
-                                            <div class="cart-img">
-                                                <a href="#"><img src="${pageContext.request.contextPath}/assets/home/images/product/01.jpg" alt=""></a>
-                                            </div>
-                                            <div class="cart-content">
-                                                <div class="cart-name"> <a href="#">Aenean Eu Tristique</a>
-                                                </div>
-                                                <div class="cart-price"> $70.00 </div>
-                                                <div class="cart-qty"> Qty: <span>1</span> </div>
-                                            </div>
-                                            <div class="remove"> <a href="#"><i class="zmdi zmdi-close"></i></a>
-                                            </div>
-                                        </div>
-                                        <div class="cart-single-wraper">
-                                            <div class="cart-img">
-                                                <a href="#"><img src="${pageContext.request.contextPath}/assets/home/images/product/02.jpg" alt=""></a>
-                                            </div>
-                                            <div class="cart-content">
-                                                <div class="cart-name"> <a href="#">Aenean Eu Tristique</a>
-                                                </div>
-                                                <div class="cart-price"> $70.00 </div>
-                                                <div class="cart-qty"> Qty: <span>1</span> </div>
-                                            </div>
-                                            <div class="remove"> <a href="#"><i class="zmdi zmdi-close"></i></a>
-                                            </div>
-                                        </div>
-                                        <div class="cart-subtotal"> Subtotal: <span>$200.00</span> </div>
-                                        <div class="cart-check-btn">
-                                            <div class="view-cart"> <a class="btn-def" href="cart.html">View
-                                                    Cart</a> </div>
-                                            <div class="check-btn"> <a class="btn-def"
-                                                                       href="checkout.html">Checkout</a> </div>
-                                        </div>
-                                    </div>
+                                                class="zmdi zmdi-shopping-cart"></i></a>  </div>
+                                   
                                 </div>
                             </li>
                         </ul>
@@ -109,16 +66,19 @@
                     <div class="col-lg-7 col-md-10 d-none d-md-block">
                         <nav id="primary-menu">
                             <ul class="main-menu">
-                                <li class="current"><a class="active" href="index.html">Home</a>
-                                    <ul class="dropdown">
+                                <li ><a class="active" href="${pageContext.request.contextPath}">Home</a>
+<!--                                    <ul class="dropdown">
                                         <li><a class="active" href="${pageContext.request.contextPath}/products">Home One</a></li>
                                         <li><a href="${pageContext.request.contextPath}/order-history">Home Two</a></li>
                                         <li><a href="index-boxed-01.html">Home Three (Boxed)</a></li>
                                         <li><a href="index-boxed-02.html">Home Four (Boxed)</a></li>
-                                    </ul>
+                                    </ul>-->
                                 </li>
-                                <li class="mega-parent pos-rltv"><a href="shop.html">Man</a>
-                                    <div class="mega-menu-area mma-800">
+                                <li ><a class="" href="${pageContext.request.contextPath}/products">Shop</a>
+
+                                </li>
+                                <li class="mega-parent pos-rltv"><a href="${pageContext.request.contextPath}/products?category=1">Man</a>
+<!--                                    <div class="mega-menu-area mma-800">
                                         <ul class="single-mega-item">
                                             <li class="menu-title uppercase">Shirts</li>
                                             <li><a href="shop.html">Shirt 01</a></li>
@@ -144,10 +104,10 @@
                                             <a href="single-product.html"><img
                                                     src="${pageContext.request.contextPath}/assets/home/images/banner/banner-fashion-02.jpg" alt=""></a>
                                         </div>
-                                    </div>
+                                    </div>-->
                                 </li>
-                                <li class="mega-parent pos-rltv"><a href="shop.html">Women</a>
-                                    <div class="mega-menu-area mma-700">
+                                <li class="mega-parent pos-rltv"><a href="${pageContext.request.contextPath}/products?category=2">Women</a>
+<!--                                    <div class="mega-menu-area mma-700">
                                         <ul class="single-mega-item">
                                             <li class="menu-title uppercase">Sharees</li>
                                             <li><a href="shop.html">Sharee 01</a></li>
@@ -176,87 +136,7 @@
                                             <a href="single-product.html"><img
                                                     src="${pageContext.request.contextPath}/assets/home/images/banner/banner-fashion.jpg" alt=""></a>
                                         </div>
-                                    </div>
-                                </li>
-                                <li class="mega-parent"><a href="shop.html">Shortcut</a>
-                                    <div class="mega-menu-area mma-970">
-                                        <ul class="single-mega-item">
-                                            <li class="menu-title uppercase">Shortcode-01</li>
-                                            <li><a href="shortcode-banner.html">shortcode-banner</a></li>
-                                            <li><a href="shortcode-best-top-on-sale-slider.html">too-on-sale</a>
-                                            </li>
-                                            <li><a href="shortcode-blog-item.html">Short Blog
-                                                    Item</a></li>
-                                            <li><a href="shortcode-brand-prodcut.html">Brand
-                                                    Product</a></li>
-                                            <li><a href="shortcode-brand-slider.html">Brand
-                                                    Slider</a></li>
-                                        </ul>
-                                        <ul class="single-mega-item">
-                                            <li class="menu-title uppercase">Shortcode-02</li>
-                                            <li><a href="shortcode-breadcrumb.html">Breadcrumb</a></li>
-                                            <li><a href="shortcode-related-product.html">Related
-                                                    Product</a></li>
-                                            <li><a href="shortcode-service.html">Service</a>
-                                            </li>
-                                            <li><a href="shortcode-skill.html">Skill</a></li>
-                                            <li><a href="shortcode-slider.html">Slider</a></li>
-                                        </ul>
-                                        <ul class="single-mega-item">
-                                            <li class="menu-title uppercase">Shortcode-03</li>
-                                            <li><a href="shortcode-team.html">Team</a></li>
-                                            <li><a href="shortcode-testimonial.html">Testimonial</a></li>
-                                            <li><a href="shortcode-why-choose-us.html">Why
-                                                    Choose Us</a></li>
-                                        </ul>
-                                    </div>
-                                </li>
-                                <li class="mega-parent"><a href="index.html">Pages</a>
-                                    <div class="mega-menu-area mma-970">
-                                        <ul class="single-mega-item coloum-4">
-                                            <li class="menu-title uppercase">Pages-01</li>
-                                            <li><a href="about-us.html">About-us</a></li>
-                                            <li><a href="blog.html">Blog</a></li>
-                                            <li><a href="blog-right.html">Blog-Right</a></li>
-                                            <li><a href="single-blog.html">Single Blog</a></li>
-                                            <li><a href="single-blog-right.html">Single Blog
-                                                    Right</a></li>
-                                            <li><a href="blog-full.html">Blog-Fullwidth</a></li>
-                                        </ul>
-                                        <ul class="single-mega-item coloum-4">
-                                            <li class="menu-title uppercase">pages-02</li>
-                                            <li><a href="blog-full-right.html">Blog Ful
-                                                    Rightl</a></li>
-                                            <li><a href="cart.html">Cart</a></li>
-                                            <li><a href="checkout.html">Checkout</a></li>
-                                            <li><a href="compare.html">Compare</a></li>
-                                            <li><a href="complete-order.html">Complete Order</a>
-                                            </li>
-                                            <li><a href="contact-us.html">Contact US</a></li>
-                                        </ul>
-                                        <ul class="single-mega-item coloum-4">
-                                            <li class="menu-title uppercase">pages-03</li>
-                                            <li><a href="login.html">Login</a></li>
-                                            <li><a href="my-account.html">My Account</a></li>
-                                            <li><a href="shop-full-grid.html">Shop Full Grid</a>
-                                            </li>
-                                            <li><a href="shop-full-list.html">Shop Full List</a>
-                                            </li>
-                                            <li><a href="shop-list-right-sidebar.html">Shop List
-                                                    Right</a></li>
-                                            <li><a href="shop-list.html">Shop List</a></li>
-                                        </ul>
-                                        <ul class="single-mega-item coloum-4">
-                                            <li class="menu-title uppercase">pages-03</li>
-                                            <li><a href="shop-right-sidebar.html">Shop Right</a>
-                                            </li>
-                                            <li><a href="shop.html">Shop</a></li>
-                                            <li><a href="single-product.html">Single Prodcut</a>
-                                            </li>
-                                            <li><a href="wishlist.html">Wishlist</a></li>
-                                            <li><a href="faq.html">FAQ</a></li>
-                                        </ul>
-                                    </div>
+                                    </div>-->
                                 </li>
                                 <li><a href="blog.html">BLOG</a></li>
                                 <li><a href="about-us.html">ABOUT</a></li>
@@ -267,11 +147,11 @@
                         <div class="search-box global-table">
                             <div class="global-row">
                                 <div class="global-cell">
-                                    <form action="#">
+                                    <form action="${pageContext.request.contextPath}/products" method="GET">
                                         <div class="input-box">
-                                            <input class="single-input" placeholder="Search anything"
-                                                   type="text">
-                                            <button class="src-btn"><i class="fa fa-search"></i></button>
+                                            <input class="single-input" placeholder="Search products..."
+                                                   type="text" name="search" value="${param.search}">
+                                            <button type="submit" class="src-btn"><i class="fa fa-search"></i></button>
                                         </div>
                                     </form>
                                 </div>

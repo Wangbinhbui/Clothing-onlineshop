@@ -198,8 +198,9 @@ public class UserDAO extends DBContext implements I_DAO<User> {
         }
 
         if (searchFilter != null && !searchFilter.trim().isEmpty()) {
-            sql.append(" AND Email LIKE ? OR Phone LIKE ? OR FirstName LIKE ? OR LastName LIKE ?");
+            sql.append(" AND (Email LIKE ? OR Phone LIKE ? OR FirstName LIKE ? OR LastName LIKE ? OR CONCAT(FirstName, ' ', LastName) LIKE ?)");
             String searchPatterns = "%" + searchFilter.trim() + "%";
+            params.add(searchPatterns);
             params.add(searchPatterns);
             params.add(searchPatterns);
             params.add(searchPatterns);
@@ -249,8 +250,9 @@ public class UserDAO extends DBContext implements I_DAO<User> {
         }
 
         if (searchFilter != null && !searchFilter.trim().isEmpty()) {
-            sql.append(" AND Email LIKE ? OR Phone LIKE ? OR FirstName LIKE ? OR LastName LIKE ?");
+            sql.append(" AND (Email LIKE ? OR Phone LIKE ? OR FirstName LIKE ? OR LastName LIKE ? OR CONCAT(FirstName, ' ', LastName) LIKE ?)");
             String searchPatterns = "%" + searchFilter.trim() + "%";
+            params.add(searchPatterns);
             params.add(searchPatterns);
             params.add(searchPatterns);
             params.add(searchPatterns);
@@ -305,8 +307,9 @@ public class UserDAO extends DBContext implements I_DAO<User> {
         }
 
         if (searchFilter != null && !searchFilter.trim().isEmpty()) {
-            sql.append(" AND Email LIKE ? OR Phone LIKE ? OR FirstName LIKE ? OR LastName LIKE ?");
+            sql.append(" AND (Email LIKE ? OR Phone LIKE ? OR FirstName LIKE ? OR LastName LIKE ? OR CONCAT(FirstName, ' ', LastName) LIKE ?)");
             String searchPattern = "%" + searchFilter.trim() + "%";
+            params.add(searchPattern);
             params.add(searchPattern);
             params.add(searchPattern);
             params.add(searchPattern);
@@ -351,8 +354,9 @@ public class UserDAO extends DBContext implements I_DAO<User> {
         }
 
         if (searchFilter != null && !searchFilter.trim().isEmpty()) {
-            sql.append(" AND Email LIKE ? OR Phone LIKE ? OR FirstName LIKE ? OR LastName LIKE ?");
+            sql.append(" AND (Email LIKE ? OR Phone LIKE ? OR FirstName LIKE ? OR LastName LIKE ? OR CONCAT(FirstName, ' ', LastName) LIKE ?)");
             String searchPattern = "%" + searchFilter.trim() + "%";
+            params.add(searchPattern);
             params.add(searchPattern);
             params.add(searchPattern);
             params.add(searchPattern);

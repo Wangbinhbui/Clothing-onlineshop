@@ -155,7 +155,7 @@
                                                                             </p>
                                                                         </td>
                                                                         <td class="item-price text-center">
-                                                                            <fmt:formatNumber value="${prod.price}" type="currency" />
+                                                                            <fmt:formatNumber value="${prod.price}" type="currency" currencyCode="VND"/>
                                                                         </td>
                                                                         <td class="item-qty text-center">
                                                                             <input type="hidden" name="cartItemId" value="${item.cartItemId}" />
@@ -189,29 +189,7 @@
                                                                         <a href="${pageContext.request.contextPath}/products" class="btn btn-secondary">Continue Shopping</a>
                                                                     </div>
                                                                     <!-- Promotion Section -->
-                                                                    <div class="coupn-area">
-                                                                        <div class="catagory-title cat-tit-5 mb-20">
-                                                                            <h3>Coupon</h3>
-                                                                            <p>Enter your coupon code if you have one.</p>
-                                                                        </div>
-                                                                        <form action="cart" method="post">
-                                                                            <input type="hidden" name="action" value="apply-promotion">
-                                                                            <div class="input-box input-box-2 mb-20">
-                                                                                <input type="text" placeholder="Coupon Code" class="info" name="promotionCode">
-                                                                            </div>
-                                                                            <button type="submit" class="btn-def btn2">Apply Coupon</button>
-                                                                        </form>
-                                                                        <c:if test="${not empty promotion}">
-                                                                            <div class="alert alert-success mt-20">
-                                                                                Promotion applied: ${promotion.promotionName} (${promotion.discountRate * 100}% off)
-                                                                            </div>
-                                                                        </c:if>
-                                                                        <c:if test="${not empty errorMessage}">
-                                                                            <div class="alert alert-danger mt-20">
-                                                                                ${errorMessage}
-                                                                            </div>
-                                                                        </c:if>
-                                                                    </div>
+                                                                    <!-- Promotion code section if needed -->
                                                                 </div>
                                                             </div>
                                                             <div class="col-lg-4 col-md-5">
@@ -220,23 +198,49 @@
                                                                         <h3>Cart Totals</h3>
                                                                     </div>
                                                                     <div class="sub-shipping">
-                                                                        <p>Subtotal <span><fmt:formatNumber value="${total / (1 - (promotion != null ? promotion.discountRate : 0))}" type="currency"/></span></p>
+                                                                        <p>Subtotal <span><fmt:formatNumber value="${total / (1 - (promotion != null ? promotion.discountRate : 0))}" type="currency" currencySymbol="VND"/></span></p>
                                                                         <c:if test="${not empty promotion}">
                                                                             <p>Discount <span>-<fmt:formatNumber value="${total * promotion.discountRate}" type="currency"/></span></p>
                                                                         </c:if>
-                                                                        
                                                                     </div>
                                                                     <div class="process-cart-total">
-                                                                        <p>Total <span><fmt:formatNumber value="${total + 3}" type="currency"/></span></p>
-                                                                    </div>
-                                                                    <div class="process-checkout-btn text-end">
-                                                                        <a class="btn-def btn2" href="cart?action=checkout">Process To Checkout</a>
+                                                                        <p>Total <span><fmt:formatNumber value="${total}" type="currency" currencySymbol="VND"/></span></p>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </form>
+                                                </form><!-- Kết thúc form cập nhật giỏ hàng -->
+
+                                                <!-- Form thanh toán đặt bên ngoài form cập nhật giỏ hàng -->
+                                                <div class="row mt-4">
+                                                    <div class="col-lg-8 col-md-7">
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-5">
+                                                        <form action="cart" method="GET" id="checkoutForm">
+                                                            <input type="hidden" name="action" value="checkout" />
+                                                            
+                                                            <div class="payment-methods mb-3 text-start">
+                                                                <h6 class="mb-2">Chọn phương thức thanh toán:</h6>
+                                                                <!-- <div class="form-check mb-2">
+                                                                    <input class="form-check-input" type="radio" name="paymentMethod" value="cod" id="codPayment" checked>
+                                                                    <label class="form-check-label" for="codPayment">
+                                                                        <i class="fa fa-money text-success"></i> Thanh toán khi nhận hàng (COD)
+                                                                    </label>
+                                                                </div> -->
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio" name="paymentMethod" value="vnpay" id="vnpayPayment" checked>
+                                                                    <label class="form-check-label" for="vnpayPayment">
+                                                                        <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Icon-VNPAY-QR.png" alt="VNPAY" style="height: 24px;">
+                                                                        Thanh toán qua VNPAY
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <button type="submit" class="btn-def btn2 text-black">Tiến hành thanh toán</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
                                             </div>
                                             <!-- cart are end-->
                                         </div>
