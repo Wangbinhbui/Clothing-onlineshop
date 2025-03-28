@@ -52,23 +52,29 @@
 
                                         <div class="mb-20">
                                             <label for="depart" class="form-label fw-semibold text-primary-light text-sm mb-8">Type<span class="text-danger-600">*</span> </label>
-                                            <select class="form-control radius-8 form-select" id="depart" name="type">
+                                            <select class="form-control radius-8 form-select" id="depart" name="type" readonly disabled>
                                                 <option value="System" ${setting.type == 'System' ? 'selected' : ''}>System</option>
                                                 <option value="User" ${setting.type == 'User' ? 'selected' : ''}>User</option>
                                                 <option value="Payment" ${setting.type == 'Payment' ? 'selected' : ''}>Payment</option>
+                                                <option value="Email" ${setting.type == 'Email' ? 'selected' : ''}>Email</option>
+                                                <option value="Notification" ${setting.type == 'Notification' ? 'selected' : ''}>Notification</option>
                                             </select>
                                         </div>
                                         <div class="mb-20">
-                                            <label for="name" class="form-label fw-semibold text-primary-light text-sm mb-8">Value <span class="text-danger-600">*</span></label>
-                                            <input type="text" class="form-control radius-8" id="name" placeholder="Enter Value" name="value" value="${setting.value}" required="">
+                                            <label for="key" class="form-label fw-semibold text-primary-light text-sm mb-8">Key <span class="text-danger-600">*</span></label>
+                                            <input type="text" class="form-control radius-8" id="key" placeholder="Enter Key" name="key" value="${setting.key}" readonly>
                                         </div>
                                         <div class="mb-20">
-                                            <label for="name" class="form-label fw-semibold text-primary-light text-sm mb-8">Order <span class="text-danger-600">*</span></label>
-                                            <input type="number" class="form-control radius-8" id="name" placeholder="Enter Order" name="order" value="${setting.order}" required="">
+                                            <label for="value" class="form-label fw-semibold text-primary-light text-sm mb-8">Value <span class="text-danger-600">*</span></label>
+                                            <input type="text" class="form-control radius-8" id="value" placeholder="Enter Value" name="value" value="${setting.value}" required="">
                                         </div>
                                         <div class="mb-20">
-                                            <label for="depart" class="form-label fw-semibold text-primary-light text-sm mb-8">Status<span class="text-danger-600">*</span> </label>
-                                            <select class="form-control radius-8 form-select" id="depart" name="status">
+                                            <label for="order" class="form-label fw-semibold text-primary-light text-sm mb-8">Order <span class="text-danger-600">*</span></label>
+                                            <input type="number" class="form-control radius-8" id="order" placeholder="Enter Order" name="order" value="${setting.order}" readonly>
+                                        </div>
+                                        <div class="mb-20">
+                                            <label for="status" class="form-label fw-semibold text-primary-light text-sm mb-8">Status<span class="text-danger-600">*</span> </label>
+                                            <select class="form-control radius-8 form-select" id="status" name="status" readonly disabled>
                                                 <option value="Active" ${setting.status == 'Active' ? 'selected' : ''}>Active</option>
                                                 <option value="Inactive" ${setting.status == 'Inactive' ? 'selected' : ''}>Inactive</option>                       
                                             </select>

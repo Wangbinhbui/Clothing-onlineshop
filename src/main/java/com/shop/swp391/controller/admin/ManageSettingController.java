@@ -133,21 +133,23 @@ public class ManageSettingController extends HttpServlet {
         SettingDAO settingDAO = new SettingDAO();
         Setting setting = settingDAO.findById(settingId);
         
-        String type = request.getParameter("type");
+//        String type = request.getParameter("type");
+//        String key = request.getParameter("key");
         String value = request.getParameter("value");
-        String orderStr = request.getParameter("order");
-        String status = request.getParameter("status");
-        int order = Integer.parseInt(orderStr);
+//        String orderStr = request.getParameter("order");
+//        String status = request.getParameter("status");
+//        int order = Integer.parseInt(orderStr);
 
-        setting.setType(type);
+//        setting.setType(type);
+//        setting.setKey(key);
         setting.setValue(value);
-        setting.setOrder(order);
-        setting.setStatus(status);
+//        setting.setOrder(order);
+//        setting.setStatus(status);
 
         boolean updated = settingDAO.update(setting);
 
         if (updated) {
-            request.setAttribute("suc", "Update setting sucessfully");
+            request.setAttribute("suc", "Update setting successfully");
             request.setAttribute("setting", setting);
             request.getRequestDispatcher("view/dashboard/admin/setting-details.jsp").forward(request, response);
         } else {
@@ -160,17 +162,18 @@ public class ManageSettingController extends HttpServlet {
     public void addSetting(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String type = request.getParameter("type");
+        String key = request.getParameter("key");
         String value = request.getParameter("value");
         String orderStr = request.getParameter("order");
         String status = request.getParameter("status");
         int order = Integer.parseInt(orderStr);
 
         SettingDAO settingDAO = new SettingDAO();
-        Setting setting = new Setting(0, type, value, order, status, null, null);
+        Setting setting = new Setting(0, type, key, value, order, status, null, null);
         int updated = settingDAO.insert(setting);
 
-        if (updated > 1) {
-            request.setAttribute("suc", "Add setting sucessfully");
+        if (updated > 0) {
+            request.setAttribute("suc", "Add setting successfully");
             request.setAttribute("setting", setting);
             request.getRequestDispatcher("view/dashboard/admin/setting-add.jsp").forward(request, response);
         } else {

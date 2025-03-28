@@ -75,11 +75,13 @@
                                     </li>
                                     <li class="d-flex align-items-center gap-1 mb-12">
                                         <span class="w-30 text-md fw-semibold text-primary-light"> Role</span>
-                                        <span class="w-70 text-secondary-light fw-medium">: ${user.roleId == 2 ? 'Sale' 
+                                        <span class="w-70 text-secondary-light fw-medium">: ${user.roleId == 1 ? 'Admin' 
+                                                                                              : user.roleId == 2 ? 'Sale' 
                                                                                               : user.roleId == 3 ? 'Marketing' 
                                                                                               : user.roleId == 4 ? 'User'
                                                                                               : user.roleId == 5 ? 'Sale Manager' 
-                                                                                              : "Staff"}</span>
+                                                                                              : "Staff"
+                                                                                               }</span>
                                     </li>
                                     <li class="d-flex align-items-center gap-1">
                                         <span class="w-30 text-md fw-semibold text-primary-light"> Status</span>
@@ -170,7 +172,7 @@
                                         </div>
                                         <div class="d-flex align-items-center justify-content-center gap-3">
                                             <button type="button" class="border border-danger-600 bg-hover-danger-200 text-danger-600 text-md px-56 py-11 radius-8"
-                                                    onclick="window.location.href = '${pageContext.request.contextPath}/manage-users'"> 
+                                                    onclick="window.location.href = '${pageContext.request.contextPath}/manage-users';"> 
                                                 Cancel
                                             </button>
                                             <button type="submit" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8"> 

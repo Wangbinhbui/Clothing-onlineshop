@@ -78,10 +78,11 @@
                 <div class="breadcumb-area overlay pos-rltv py-4" style="background: url('assets/images/breadcrumb.jpg'); background-size: cover;">
                     <div class="container">
                         <div class="bread-main text-center text-white">
-                            <h5>Cart Details</h5>
+                            <h5>Shopping Cart</h5>
                             <ol class="breadcrumb justify-content-center">
-                                <li class="breadcrumb-item"><a href="index.html" class="text-white">Home</a></li>
+                                <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/home" class="text-white">Home</a></li>
                                 <li class="breadcrumb-item active text-white">Cart</li>
+                                <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/cart?action=details" class="text-white">Checkout</a></li>
                             </ol>
                         </div>
                     </div>
@@ -155,7 +156,7 @@
                                                                             </p>
                                                                         </td>
                                                                         <td class="item-price text-center">
-                                                                            <fmt:formatNumber value="${prod.price}" type="currency" currencyCode="VND"/>
+                                                                            <fmt:formatNumber value="${prod.price}" type="currency" currencySymbol="$"  />
                                                                         </td>
                                                                         <td class="item-qty text-center">
                                                                             <input type="hidden" name="cartItemId" value="${item.cartItemId}" />
@@ -167,7 +168,7 @@
                                                                         </td>
                                                                         <td class="total-price text-center">
                                                                             <strong>
-                                                                                <fmt:formatNumber value="${prod.price * item.quantity}" type="currency" />
+                                                                                <fmt:formatNumber value="${prod.price * item.quantity}" type="currency" currencySymbol="$" />
                                                                             </strong>
                                                                         </td>
                                                                         <td class="remove-item text-center">
@@ -179,68 +180,50 @@
                                                         </table>
                                                     </div>
 
-
-                                                    <div class="cart-bottom-area">
-                                                        <div class="row">
-                                                            <div class="col-lg-8 col-md-7">
-                                                                <div class="update-coupne-area">
-                                                                    <div class="update-continue-btn text-end pb-20">
-                                                                        <button type="submit" class="btn btn-primary">Update Cart</button>
-                                                                        <a href="${pageContext.request.contextPath}/products" class="btn btn-secondary">Continue Shopping</a>
-                                                                    </div>
-                                                                    <!-- Promotion Section -->
-                                                                    <!-- Promotion code section if needed -->
-                                                                </div>
+                                                    <div class="row mt-4">
+                                                        <div class="col-lg-8 col-md-7">
+                                                            <div class="update-continue-btn d-flex justify-content-between pb-20">
+                                                                <a href="${pageContext.request.contextPath}/products" class="btn btn-secondary">Continue Shopping</a>
+                                                                <button type="submit" class="btn btn-primary">Update Cart</button>
+                                                                <c:choose>
+                                                                    <c:when test="${empty cartItems || cartItems.size() == 0}">
+                                                                        <button type="button" class="btn btn-primary btn-lg disabled" 
+                                                                                data-bs-toggle="tooltip" data-bs-placement="top" 
+                                                                                title="Your cart is empty">
+                                                                            <i class="fa fa-arrow-right"></i> Proceed to Checkout
+                                                                        </button>
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <a href="${pageContext.request.contextPath}/cart?action=details" class="btn btn-primary btn-lg">
+                                                                            <i class="fa fa-arrow-right"></i> Proceed to Checkout
+                                                                        </a>
+                                                                    </c:otherwise>
+                                                                </c:choose>
                                                             </div>
-                                                            <div class="col-lg-4 col-md-5">
-                                                                <div class="cart-total-area">
-                                                                    <div class="catagory-title cat-tit-5 mb-20 text-end">
-                                                                        <h3>Cart Totals</h3>
-                                                                    </div>
-                                                                    <div class="sub-shipping">
-                                                                        <p>Subtotal <span><fmt:formatNumber value="${total / (1 - (promotion != null ? promotion.discountRate : 0))}" type="currency" currencySymbol="VND"/></span></p>
-                                                                        <c:if test="${not empty promotion}">
-                                                                            <p>Discount <span>-<fmt:formatNumber value="${total * promotion.discountRate}" type="currency"/></span></p>
-                                                                        </c:if>
-                                                                    </div>
-                                                                    <div class="process-cart-total">
-                                                                        <p>Total <span><fmt:formatNumber value="${total}" type="currency" currencySymbol="VND"/></span></p>
-                                                                    </div>
+                                                            <!-- Added cart confirmation message -->
+                                                            <div class="alert alert-info mt-3">
+                                                                <p><i class="fa fa-info-circle"></i> You have <strong>${cartItems.size()}</strong> items in your cart.</p>
+                                                                <p class="small mb-0">Click "Proceed to Checkout" to continue with your purchase.</p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-4 col-md-5">
+                                                            <div class="cart-total-area">
+                                                                <div class="catagory-title cat-tit-5 mb-20 text-end">
+                                                                    <h3>Cart Totals</h3>
+                                                                </div>
+                                                                <div class="sub-shipping">
+                                                                    <p>Subtotal <span><fmt:formatNumber value="${total / (1 - (promotion != null ? promotion.discountRate : 0))}" type="currency" currencySymbol="$" /></span></p>
+                                                                    <c:if test="${not empty promotion}">
+                                                                        <p>Discount <span>-<fmt:formatNumber value="${total * promotion.discountRate}" type="currency" currencySymbol="$" /></span></p>
+                                                                    </c:if>
+                                                                </div>
+                                                                <div class="process-cart-total">
+                                                                    <p>Total <span><fmt:formatNumber value="${total + 3}" type="currency" currencySymbol="$" /></span></p>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </form><!-- Kết thúc form cập nhật giỏ hàng -->
-
-                                                <!-- Form thanh toán đặt bên ngoài form cập nhật giỏ hàng -->
-                                                <div class="row mt-4">
-                                                    <div class="col-lg-8 col-md-7">
-                                                    </div>
-                                                    <div class="col-lg-4 col-md-5">
-                                                        <form action="cart" method="GET" id="checkoutForm">
-                                                            <input type="hidden" name="action" value="checkout" />
-                                                            
-                                                            <div class="payment-methods mb-3 text-start">
-                                                                <h6 class="mb-2">Chọn phương thức thanh toán:</h6>
-                                                                <!-- <div class="form-check mb-2">
-                                                                    <input class="form-check-input" type="radio" name="paymentMethod" value="cod" id="codPayment" checked>
-                                                                    <label class="form-check-label" for="codPayment">
-                                                                        <i class="fa fa-money text-success"></i> Thanh toán khi nhận hàng (COD)
-                                                                    </label>
-                                                                </div> -->
-                                                                <div class="form-check">
-                                                                    <input class="form-check-input" type="radio" name="paymentMethod" value="vnpay" id="vnpayPayment" checked>
-                                                                    <label class="form-check-label" for="vnpayPayment">
-                                                                        <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Icon-VNPAY-QR.png" alt="VNPAY" style="height: 24px;">
-                                                                        Thanh toán qua VNPAY
-                                                                    </label>
-                                                                </div>
-                                                            </div>
-                                                            
-                                                            <button type="submit" class="btn-def btn2 text-black">Tiến hành thanh toán</button>
-                                                        </form>
-                                                    </div>
-                                                </div>
                                             </div>
                                             <!-- cart are end-->
                                         </div>

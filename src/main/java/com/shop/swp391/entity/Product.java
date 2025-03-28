@@ -31,5 +31,6 @@ public class Product {
     private Integer collectionID;
     private String description;
     private int status; // 1 - Active, 0 - Inactive
+    private String gender;
 
 }

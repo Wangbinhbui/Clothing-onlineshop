@@ -1,7 +1,7 @@
 <%-- 
     Document   : productdetails
     Created on : Feb 11, 2025, 12:53:14 PM
-    Author     : binh
+    Author     : hung
 --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page import="java.util.List" %>
@@ -137,7 +137,7 @@
                                     <h3>${product.productName}</h3>
                                     <div class="prodcut-ratting-price">
                                         <div class="prodcut-price">
-                                            <div class="new-price">VND ${product.price}</div>
+                                            <div class="new-price">$${product.price}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -263,13 +263,64 @@
                         <div class="col-lg-12">
                             <div class="product-area tab-cars-style">
                                 <div class="title-tab-product-category row">
-                                    
+                                    <div class="col-lg-12 text-center">
+                                        <ul class="nav mb-40 heading-style-2" role="tablist">
+                                            <li role="presentation"><a href="#newarrival" aria-controls="newarrival" role="tab" data-bs-toggle="tab">Description</a></li>
+                                            <li role="presentation"><a class="active" href="#bestsellr" aria-controls="bestsellr" role="tab" data-bs-toggle="tab">Review</a></li>
+                                            <li role="presentation"><a href="#specialoffer" aria-controls="specialoffer" role="tab" data-bs-toggle="tab">Tags</a></li>
+                                        </ul>
+                                    </div>
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="col-lg-12">
                                     <div class="content-tab-product-category">
                                         <!-- Tab panes -->
-                                      
+                                        <div class="tab-content">
+                                            <div role="tabpanel" class="tab-pane fix fade in" id="newarrival">
+                                                <div class="review-wraper">
+                                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+                                                        <br> veniam, quis nostrud exercitation.</p>
+                                                    <h5>ABOUT ME</h5>
+                                                    <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English</p>
+                                                    <h5>SIZE & FIT</h5>
+                                                    <ul>
+                                                        <li>Model wears: Style Photoliya U2980</li>
+                                                        <li>Model's height: 185"66</li>
+                                                    </ul>
+                                                    <h5>Overview</h5>
+                                                    <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form.</p>
+                                                </div>
+                                            </div>
+                                            <div role="tabpanel" class="tab-pane fix fade show active" id="bestsellr">
+                                                <div class="review-wraper">
+                                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim <br> veniam, quis nostrud exercitation.</p>
+                                                    <h5>SIZE & FIT</h5>
+                                                    <ul>
+                                                        <li>Model wears: Style Photoliya U2980</li>
+                                                        <li>Model's height: 185"66</li>
+                                                    </ul>
+                                                    <h5>ABOUT ME</h5>
+                                                    <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English</p>
+                                                    <h5>Overview</h5>
+                                                    <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form.</p>
+                                                </div>
+                                            </div>
+                                            <div role="tabpanel" class="tab-pane fix fade in" id="specialoffer">
+                                                <ul class="tag-filter">
+                                                    <li><a href="#">Fashion</a></li>
+                                                    <li><a href="#">Women</a></li>
+                                                    <li><a href="#">Winter</a></li>
+                                                    <li><a href="#">Street Style</a></li>
+                                                    <li><a href="#">Style</a></li>
+                                                    <li><a href="#">Shop</a></li>
+                                                    <li><a href="#">Collection</a></li>
+                                                    <li><a href="#">Spring 2022</a></li>
+                                                    <li><a href="#">Street Style</a></li>
+                                                    <li><a href="#">Style</a></li>
+                                                    <li><a href="#">Shop</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -280,7 +331,228 @@
             <!--descripton-area end--> 
 
             <!--new arrival area start-->
-           
+            <div class="new-arrival-area ptb-70">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12 text-center">
+                            <div class="heading-title heading-style pos-rltv mb-50 text-center">
+                                <h5 class="uppercase">Related Product</h5>
+                            </div>
+                            <div class="total-new-arrival new-arrival-slider-active carsoule-btn">
+                                <div class="product-item">
+                                    <!-- single product start-->
+                                    <div class="single-product">
+                                        <div class="product-img">
+                                            <div class="product-label">
+                                                <div class="new">New</div>
+                                            </div>
+                                            <div class="single-prodcut-img  product-overlay pos-rltv">
+                                                <a href="single-product.html"> <img alt="" src="images/product/01.jpg"
+                                                                                    class="primary-image"> <img alt="" src="images/product/02.jpg"
+                                                                                    class="secondary-image"> </a>
+                                            </div>
+                                            <div class="product-icon socile-icon-tooltip text-center">
+                                                <ul>
+                                                    <li>
+                                                        <form action="cart" method="POST" style="display: inline;">
+                                                            <input type="hidden" name="action" value="add">
+                                                            <input type="hidden" name="productId" value="${product.productID}">
+                                                            <input type="hidden" name="quantity" value="1">
+                                                            <button type="submit" class="add-cart">
+                                                                <i class="fa fa-cart-plus"></i>
+                                                            </button>
+                                                        </form>
+                                                    </li>
+
+                                                    <li><a href="#" data-tooltip="Wishlist" class="w-list"><i
+                                                                class="fa fa-heart-o"></i></a></li>
+                                                    <li><a href="#" data-tooltip="Compare" class="cpare"><i
+                                                                class="fa fa-refresh"></i></a></li>
+                                                    <li><a href="#" data-tooltip="Quick View" class="q-view" data-bs-toggle="modal"
+                                                           data-bs-target=".modal"><i class="fa fa-eye"></i></a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="product-text">
+                                            <div class="prodcut-name"> <a href="single-product.html">Quisque fringilla</a>
+                                            </div>
+                                            <div class="prodcut-ratting-price">
+                                                <div class="prodcut-price">
+                                                    <div class="new-price"> $220 </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- single product end-->
+                                </div>
+                                <div class="product-item">
+                                    <!-- single product start-->
+                                    <div class="single-product">
+                                        <div class="product-img">
+                                            <div class="single-prodcut-img  product-overlay pos-rltv">
+                                                <a href="single-product.html"> <img alt="" src="images/product/03.jpg"
+                                                                                    class="primary-image"> <img alt="" src="images/product/04.jpg"
+                                                                                    class="secondary-image"> </a>
+                                            </div>
+                                            <div class="product-icon socile-icon-tooltip text-center">
+                                                <ul>
+                                                    <li>
+                                                        <form action="cart-details" method="post">
+                                                            <input type="hidden" name="action" value="add">
+                                                            <input type="hidden" name="productId" value="${product.productID}">
+                                                            <input type="hidden" name="quantity" value="1">
+                                                            <button type="submit" data-tooltip="Add To Cart" class="add-cart" data-placement="left">
+                                                                <i class="fa fa-cart-plus"></i>
+                                                            </button>
+                                                        </form>
+
+                                                    </li>
+
+                                                    <li><a href="#" data-tooltip="Wishlist" class="w-list"><i
+                                                                class="fa fa-heart-o"></i></a></li>
+                                                    <li><a href="#" data-tooltip="Compare" class="cpare"><i
+                                                                class="fa fa-refresh"></i></a></li>
+                                                    <li><a href="#" data-tooltip="Quick View" class="q-view" data-bs-toggle="modal"
+                                                           data-bs-target=".modal"><i class="fa fa-eye"></i></a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="product-text">
+                                            <div class="prodcut-name"> <a href="single-product.html">Quisque fringilla</a>
+                                            </div>
+                                            <div class="prodcut-ratting-price">
+                                                <div class="prodcut-price">
+                                                    <div class="new-price"> $220 </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- single product end-->
+                                </div>
+                                <div class="product-item">
+                                    <!-- single product start-->
+                                    <div class="single-product">
+                                        <div class="product-img">
+                                            <div class="product-label">
+                                                <div class="new">Sale</div>
+                                            </div>
+                                            <div class="single-prodcut-img  product-overlay pos-rltv">
+                                                <a href="single-product.html"> <img alt="" src="images/product/02.jpg"
+                                                                                    class="primary-image"> <img alt="" src="images/product/03.jpg"
+                                                                                    class="secondary-image"> </a>
+                                            </div>
+                                            <div class="product-icon socile-icon-tooltip text-center">
+                                                <ul>
+                                                    <li><a href="#" data-tooltip="Add To Cart" class="add-cart"
+                                                           data-placement="left"><i class="fa fa-cart-plus"></i></a></li>
+                                                    <li><a href="#" data-tooltip="Wishlist" class="w-list"><i
+                                                                class="fa fa-heart-o"></i></a></li>
+                                                    <li><a href="#" data-tooltip="Compare" class="cpare"><i
+                                                                class="fa fa-refresh"></i></a></li>
+                                                    <li><a href="#" data-tooltip="Quick View" class="q-view" data-bs-toggle="modal"
+                                                           data-bs-target=".modal"><i class="fa fa-eye"></i></a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="product-text">
+                                            <div class="prodcut-name"> <a href="single-product.html">Quisque fringilla</a>
+                                            </div>
+                                            <div class="prodcut-ratting-price">
+                                                <div class="prodcut-ratting">
+                                                    <a href="#"><i class="fa fa-star"></i></a>
+                                                    <a href="#"><i class="fa fa-star"></i></a>
+                                                    <a href="#"><i class="fa fa-star"></i></a>
+                                                    <a href="#"><i class="fa fa-star"></i></a>
+                                                    <a href="#"><i class="fa fa-star-o"></i></a>
+                                                </div>
+                                                <div class="prodcut-price">
+                                                    <div class="new-price"> $220 </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- single product end-->
+                                </div>
+                                <div class="product-item">
+                                    <!-- single product start-->
+                                    <div class="single-product">
+                                        <div class="product-img">
+                                            <div class="single-prodcut-img  product-overlay pos-rltv">
+                                                <a href="single-product.html"> <img alt="" src="images/product/04.jpg"
+                                                                                    class="primary-image"> <img alt="" src="images/product/03.jpg"
+                                                                                    class="secondary-image"> </a>
+                                            </div>
+                                            <div class="product-icon socile-icon-tooltip text-center">
+                                                <ul>
+                                                    <li><a href="#" data-tooltip="Add To Cart" class="add-cart"
+                                                           data-placement="left"><i class="fa fa-cart-plus"></i></a></li>
+                                                    <li><a href="#" data-tooltip="Wishlist" class="w-list"><i
+                                                                class="fa fa-heart-o"></i></a></li>
+                                                    <li><a href="#" data-tooltip="Compare" class="cpare"><i
+                                                                class="fa fa-refresh"></i></a></li>
+                                                    <li><a href="#" data-tooltip="Quick View" class="q-view" data-bs-toggle="modal"
+                                                           data-bs-target=".modal"><i class="fa fa-eye"></i></a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="product-text">
+                                            <div class="prodcut-name"> <a href="single-product.html">Quisque fringilla</a>
+                                            </div>
+                                            <div class="prodcut-ratting-price">
+                                                <div class="prodcut-price">
+                                                    <div class="new-price"> $220 </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- single product end-->
+                                </div>
+                                <div class="product-item">
+                                    <!-- single product start-->
+                                    <div class="single-product">
+                                        <div class="product-img">
+                                            <div class="single-prodcut-img  product-overlay pos-rltv">
+                                                <a href="single-product.html"> <img alt="" src="images/product/05.jpg"
+                                                                                    class="primary-image"> <img alt="" src="images/product/06.jpg"
+                                                                                    class="secondary-image"> </a>
+                                            </div>
+                                            <div class="product-icon socile-icon-tooltip text-center">
+                                                <ul>
+                                                    <li><a href="#" data-tooltip="Add To Cart" class="add-cart"
+                                                           data-placement="left"><i class="fa fa-cart-plus"></i></a></li>
+                                                    <li><a href="#" data-tooltip="Wishlist" class="w-list"><i
+                                                                class="fa fa-heart-o"></i></a></li>
+                                                    <li><a href="#" data-tooltip="Compare" class="cpare"><i
+                                                                class="fa fa-refresh"></i></a></li>
+                                                    <li><a href="#" data-tooltip="Quick View" class="q-view" data-bs-toggle="modal"
+                                                           data-bs-target=".modal"><i class="fa fa-eye"></i></a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="product-text">
+                                            <div class="prodcut-name"> <a href="single-product.html">Quisque fringilla</a>
+                                            </div>
+                                            <div class="prodcut-ratting-price">
+                                                <div class="prodcut-ratting">
+                                                    <a href="#"><i class="fa fa-star"></i></a>
+                                                    <a href="#"><i class="fa fa-star"></i></a>
+                                                    <a href="#"><i class="fa fa-star"></i></a>
+                                                    <a href="#"><i class="fa fa-star"></i></a>
+                                                    <a href="#"><i class="fa fa-star-o"></i></a> </div>
+                                                <div class="prodcut-price">
+                                                    <div class="new-price"> $220 </div>
+                                                    <div class="old-price"> <del>$250</del> </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- single product end-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!--new arrival area end-->
 
             <!-- footer area start-->

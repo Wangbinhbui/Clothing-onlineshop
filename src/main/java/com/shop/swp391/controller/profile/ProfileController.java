@@ -118,7 +118,7 @@ public class ProfileController extends HttpServlet {
         }
 
         // find user by email
-        user = userDAO.findByEmail(user);
+//        user = userDAO.findByEmail(user);
         request.setAttribute("user", user);
         request.getRequestDispatcher(PROFILE_JSP).forward(request, response);
     }

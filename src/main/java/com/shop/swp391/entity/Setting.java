@@ -26,7 +26,8 @@ import lombok.ToString;
 @Setter
 public class Setting {
     private int id;      
-    private String type;     
+    private String type;
+    private String key;
     private String value;    
     private int order;   
     private String status;   

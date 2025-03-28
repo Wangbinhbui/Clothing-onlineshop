@@ -45,7 +45,7 @@
 
         <div class="dashboard-main-body">
             <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
-                <h6 class="fw-semibold mb-0">Users List</h6>
+                <h6 class="fw-semibold mb-0">Customer List</h6>
                 <ul class="d-flex align-items-center gap-2">
                     <li class="fw-medium">
                         <a href="index.html" class="d-flex align-items-center gap-1 hover-text-primary">
@@ -85,7 +85,7 @@
 
                     <a href="${pageContext.request.contextPath}/manage-users?action=addform" class="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2"> 
                         <iconify-icon icon="ic:baseline-plus" class="icon text-xl line-height-1"></iconify-icon>
-                        Add New User
+                        Add New Customer
                     </a>
                 </div>
                 <div class="card-body p-24">

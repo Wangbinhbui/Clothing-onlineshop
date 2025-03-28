@@ -53,20 +53,17 @@
 
                                 <div class="input-box mb-20">
                                     <label class="control-label">E-Mail / Username</label>
-                                    <input type="text" placeholder="E-Mail or Username" name="username" value="admin" class="info" required>
+                                    <input type="text" placeholder="E-Mail or Username" name="username" class="info" required>
                                 </div>
                                 <div class="input-box">
                                     <label class="control-label">Password</label>
-                                    <input type="password" placeholder="Password" name="password" class="info" value="123" required>
+                                    <input type="password" placeholder="Password" name="password" class="info" required>
                                 </div>
                             </div>
                             <div class="frm-action">
                                 <div class="input-box tci-box">
                                     <a href="#" onclick="this.closest('form').submit(); return false;" class="btn-def btn2">Login</a>
                                 </div>
-                                <span>
-                                    <input class="remr" type="checkbox" name="remember"> Remember me 
-                                </span>
                                 <a href="authen?action=enter-email" class="forgotten forg">Forgotten Password?</a>
                             </div>
                         </form>

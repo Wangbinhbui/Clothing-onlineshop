@@ -14,6 +14,7 @@ public class BlogCategoryDAO extends DBContext implements I_DAO<BlogCategory> {
         List<BlogCategory> categories = new ArrayList<>();
         String sql = "SELECT * FROM blog_category";
         try {
+            connection = getConnection();
             statement = connection.prepareStatement(sql);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -31,6 +32,7 @@ public class BlogCategoryDAO extends DBContext implements I_DAO<BlogCategory> {
     public boolean update(BlogCategory category) {
         String sql = "UPDATE blog_category SET name = ?, description = ? WHERE id = ?";
         try {
+            connection = getConnection();
             statement = connection.prepareStatement(sql);
             statement.setString(1, category.getName());
             statement.setString(2, category.getDescription());
@@ -48,6 +50,7 @@ public class BlogCategoryDAO extends DBContext implements I_DAO<BlogCategory> {
     public boolean delete(BlogCategory category) {
         String sql = "DELETE FROM blog_category WHERE id = ?";
         try {
+            connection = getConnection();
             statement = connection.prepareStatement(sql);
             statement.setInt(1, category.getId());
             return statement.executeUpdate() > 0;
@@ -63,6 +66,7 @@ public class BlogCategoryDAO extends DBContext implements I_DAO<BlogCategory> {
     public int insert(BlogCategory category) {
         String sql = "INSERT INTO blog_category (name, description) VALUES (?, ?)";
         try {
+            connection = getConnection();
             statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, category.getName());
             statement.setString(2, category.getDescription());
@@ -96,6 +100,7 @@ public class BlogCategoryDAO extends DBContext implements I_DAO<BlogCategory> {
     public BlogCategory findById(int id) {
         String sql = "SELECT * FROM blog_category WHERE id = ?";
         try {
+            connection = getConnection();
             statement = connection.prepareStatement(sql);
             statement.setInt(1, id);
             resultSet = statement.executeQuery();

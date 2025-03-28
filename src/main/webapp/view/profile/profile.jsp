@@ -71,7 +71,8 @@
                                                                                       : user.roleId == 3 ? 'Marketing' 
                                                                                       : user.roleId == 4 ? 'User'
                                                                                       : user.roleId == 5 ? 'Sale Manager' 
-                                                                                      : "Staff"}</span>
+                                                                                      : user.roleId == 6 ? 'Staff'
+                                                                                      : "Admin"}</span>
                             </li>
                         </ul>
                     </div>

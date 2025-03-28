@@ -135,5 +135,126 @@ public class BlogDAO extends DBContext implements I_DAO<Blog> {
         }
         return null;
     }
+    
+    public List<Blog> findBlogsWithFilters(String searchFilter, String statusFilter, Integer categoryId, int page, int pageSize) {
+        List<Blog> blogs = new ArrayList<>();
+        StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM blog WHERE 1=1");
+        List<Object> parameters = new ArrayList<>();
+        
+        // Build WHERE clause based on filters
+        if (searchFilter != null && !searchFilter.isEmpty()) {
+            sqlBuilder.append(" AND title LIKE ?");
+            parameters.add("%" + searchFilter + "%");
+        }
+        
+        if (statusFilter != null && !statusFilter.isEmpty()) {
+            sqlBuilder.append(" AND status = ?");
+            parameters.add(statusFilter);
+        }
+        
+        if (categoryId != null) {
+            sqlBuilder.append(" AND category_id = ?");
+            parameters.add(categoryId);
+        }
+        
+        // Add ORDER BY and LIMIT for pagination
+        sqlBuilder.append(" ORDER BY id DESC LIMIT ?, ?");
+        parameters.add((page - 1) * pageSize);
+        parameters.add(pageSize);
+        
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sqlBuilder.toString());
+            
+            // Set parameters
+            for (int i = 0; i < parameters.size(); i++) {
+                statement.setObject(i + 1, parameters.get(i));
+            }
+            
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                blogs.add(getFromResultSet(resultSet));
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(BlogDAO.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            closeResources();
+        }
+        
+        return blogs;
+    }
+    
+    public int getTotalFilteredBlogs(String searchFilter, String statusFilter, Integer categoryId) {
+        StringBuilder sqlBuilder = new StringBuilder("SELECT COUNT(*) FROM blog WHERE 1=1");
+        List<Object> parameters = new ArrayList<>();
+        
+        // Build WHERE clause based on filters
+        if (searchFilter != null && !searchFilter.isEmpty()) {
+            sqlBuilder.append(" AND title LIKE ?");
+            parameters.add("%" + searchFilter + "%");
+        }
+        
+        if (statusFilter != null && !statusFilter.isEmpty()) {
+            sqlBuilder.append(" AND status = ?");
+            parameters.add(statusFilter);
+        }
+        
+        if (categoryId != null) {
+            sqlBuilder.append(" AND category_id = ?");
+            parameters.add(categoryId);
+        }
+        
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sqlBuilder.toString());
+            
+            // Set parameters
+            for (int i = 0; i < parameters.size(); i++) {
+                statement.setObject(i + 1, parameters.get(i));
+            }
+            
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(BlogDAO.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            closeResources();
+        }
+        
+        return 0;
+    }
+    
+    /**
+     * Find related blogs based on category, excluding the current blog
+     * @param currentBlogId The ID of the current blog to exclude
+     * @param categoryId The category ID to filter by
+     * @param limit The maximum number of blogs to return
+     * @return A list of related blogs
+     */
+    public List<Blog> findRelatedBlogs(int currentBlogId, int categoryId, int limit) {
+        List<Blog> blogs = new ArrayList<>();
+        String sql = "SELECT * FROM blog WHERE category_id = ? AND id != ? AND status = 'Active' ORDER BY created_date DESC LIMIT ?";
+        
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, categoryId);
+            statement.setInt(2, currentBlogId);
+            statement.setInt(3, limit);
+            resultSet = statement.executeQuery();
+            
+            while (resultSet.next()) {
+                blogs.add(getFromResultSet(resultSet));
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(BlogDAO.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            closeResources();
+        }
+        
+        return blogs;
+    }
 }
 

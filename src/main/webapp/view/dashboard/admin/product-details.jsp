@@ -128,6 +128,15 @@
                                     </c:forEach>
                                 </select>
                             </div>
+                            
+                            <div class="mb-3">
+                                <label for="gender" class="form-label">Gender</label>
+                                <select class="form-select" id="gender" name="gender" required>
+                                    <option value="man" ${product.gender == 'man' ? 'selected' : ''}>Man</option>
+                                    <option value="woman" ${product.gender == 'woman' ? 'selected' : ''}>Woman</option>
+                                    <option value="unisex" ${product.gender == 'unisex' ? 'selected' : ''}>Unisex</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                     

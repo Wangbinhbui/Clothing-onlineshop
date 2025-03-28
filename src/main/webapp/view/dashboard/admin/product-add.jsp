@@ -115,6 +115,15 @@
                                     <option value="0">Inactive</option>
                                 </select>
                             </div>
+                            
+                            <div class="mb-3">
+                                <label for="gender" class="form-label">Gender</label>
+                                <select class="form-select" id="gender" name="gender" required>
+                                    <option value="man">Man</option>
+                                    <option value="woman">Woman</option>
+                                    <option value="unisex" selected>Unisex</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                     

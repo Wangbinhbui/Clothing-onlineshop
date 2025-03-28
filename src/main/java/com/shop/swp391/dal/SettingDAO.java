@@ -45,6 +45,7 @@ public class SettingDAO extends DBContext implements I_DAO<Setting> {
         String sql = "UPDATE `SWP391_FASHION_SHOP`.`setting`\n"
             + "SET\n"
             + "`type` = ?,\n"
+            + "`key` = ?,\n"
             + "`value` = ?,\n"
             + "`order` = ?,\n"
             + "`status` = ?\n" 
@@ -53,10 +54,11 @@ public class SettingDAO extends DBContext implements I_DAO<Setting> {
             connection = getConnection();
             statement = connection.prepareStatement(sql);
             statement.setString(1, setting.getType());
-            statement.setString(2, setting.getValue());
-            statement.setInt(3, setting.getOrder());
-            statement.setString(4, setting.getStatus());
-            statement.setInt(5, setting.getId());
+            statement.setString(2, setting.getKey());
+            statement.setString(3, setting.getValue());
+            statement.setInt(4, setting.getOrder());
+            statement.setString(5, setting.getStatus());
+            statement.setInt(6, setting.getId());
 
             int affectedRows = statement.executeUpdate();
             return affectedRows > 0;
@@ -78,17 +80,19 @@ public class SettingDAO extends DBContext implements I_DAO<Setting> {
     public int insert(Setting setting) {
         String sql = "INSERT INTO `SWP391_FASHION_SHOP`.`setting` ("
                 + "`type`, "
+                + "`key`, "
                 + "`value`, "
                 + "`order`, "
                 + "`status`) "
-                + "VALUES (?, ?, ?, ?);";
+                + "VALUES (?, ?, ?, ?, ?);";
         try {
             connection = getConnection();
             statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, setting.getType());
-            statement.setString(2, setting.getValue());
-            statement.setInt(3, setting.getOrder());
-            statement.setString(4, setting.getStatus());
+            statement.setString(2, setting.getKey());
+            statement.setString(3, setting.getValue());
+            statement.setInt(4, setting.getOrder());
+            statement.setString(5, setting.getStatus());
 
             int affectedRows = statement.executeUpdate();
 
@@ -146,8 +150,9 @@ public class SettingDAO extends DBContext implements I_DAO<Setting> {
         }
 
         if (searchFilter != null && !searchFilter.trim().isEmpty()) {
-            sql.append(" AND value LIKE ?");
+            sql.append(" AND (value LIKE ? OR `key` LIKE ?)");
             String searchPatterns = "%" + searchFilter.trim() + "%";
+            params.add(searchPatterns);
             params.add(searchPatterns);
         }
 
@@ -189,8 +194,9 @@ public class SettingDAO extends DBContext implements I_DAO<Setting> {
         }
 
         if (searchFilter != null && !searchFilter.trim().isEmpty()) {
-            sql.append(" AND value LIKE ?");
+            sql.append(" AND (value LIKE ? OR `key` LIKE ?)");
             String searchPatterns = "%" + searchFilter.trim() + "%";
+            params.add(searchPatterns);
             params.add(searchPatterns);
         }
 
@@ -235,6 +241,7 @@ public class SettingDAO extends DBContext implements I_DAO<Setting> {
         Setting setting = new Setting();
         setting.setId(rs.getInt("id"));
         setting.setType(rs.getString("type"));
+        setting.setKey(rs.getString("key"));
         setting.setValue(rs.getString("value"));
         setting.setOrder(rs.getInt("order"));
         setting.setStatus(rs.getString("status"));
@@ -243,6 +250,54 @@ public class SettingDAO extends DBContext implements I_DAO<Setting> {
         return setting;
     }
 
+    /**
+     * Find setting by type and key
+     * 
+     * @param type The setting type
+     * @param key The setting key
+     * @return Setting object if found, null otherwise
+     */
+    public Setting findByTypeAndKey(String type, String key) {
+        String sql = "SELECT * FROM SWP391_FASHION_SHOP.setting WHERE type = ? AND `key` = ?";
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql);
+            statement.setString(1, type);
+            statement.setString(2, key);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return getFromResultSet(resultSet);
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error finding setting by type and key: " + ex.getMessage());
+        } finally {
+            closeResources();
+        }
+        return null;
+    }
     
-
+    /**
+     * Get all settings of a specific type
+     * 
+     * @param type The setting type to filter by
+     * @return List of Setting objects
+     */
+    public List<Setting> getSettingsByType(String type) {
+        List<Setting> settings = new ArrayList<>();
+        String sql = "SELECT * FROM SWP391_FASHION_SHOP.setting WHERE type = ? ORDER BY `order`";
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql);
+            statement.setString(1, type);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                settings.add(getFromResultSet(resultSet));
+            }
+        } catch (SQLException ex) {
+            System.err.println("Error getting settings by type: " + ex.getMessage());
+        } finally {
+            closeResources();
+        }
+        return settings;
+    }
 }

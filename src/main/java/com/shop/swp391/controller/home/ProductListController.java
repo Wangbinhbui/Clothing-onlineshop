@@ -81,6 +81,7 @@ public class ProductListController extends HttpServlet {
             String maxPriceParam = request.getParameter("maxPrice");
             String colorIdParam = request.getParameter("colorId");
             String sortBy = request.getParameter("sortBy");
+            String genderParam = request.getParameter("gender");
             
             // Parse parameters
             int currentPage = 1;
@@ -127,7 +128,7 @@ public class ProductListController extends HttpServlet {
             int pageSize = 6;
             
             // Get total products count based on filters
-            int totalProducts = productDAO.countProductsWithFilters(searchQuery, minPrice, maxPrice, colorId);
+            int totalProducts = productDAO.countProductsWithFilters(searchQuery, minPrice, maxPrice, colorId, genderParam);
             
             // Calculate total pages
             int totalPages = (int) Math.ceil((double) totalProducts / pageSize);
@@ -147,7 +148,7 @@ public class ProductListController extends HttpServlet {
             }
             
             // Get list of products for current page
-            List<Product> products = productDAO.searchProductsWithFilters(searchQuery, currentPage, pageSize, sortBy, minPrice, maxPrice, colorId);
+            List<Product> products = productDAO.searchProductsWithFilters(searchQuery, currentPage, pageSize, sortBy, minPrice, maxPrice, colorId, genderParam);
             
             // Get thumbnail for each product
             ProductImgDAO productImgDAO = new ProductImgDAO();
@@ -175,6 +176,7 @@ public class ProductListController extends HttpServlet {
             request.setAttribute("maxPrice", maxPrice);
             request.setAttribute("colorId", colorId);
             request.setAttribute("sortBy", sortBy != null ? sortBy : "default");
+            request.setAttribute("gender", genderParam);
             
             // Set database min/max price attributes for the price filter
             request.setAttribute("dbMinPrice", dbMinPrice);

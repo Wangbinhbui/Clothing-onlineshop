@@ -96,6 +96,7 @@ public class ManageProductController extends HttpServlet {
             throws ServletException, IOException {
         String categoryFilter = request.getParameter("category");
         String collectionFilter = request.getParameter("collection");
+        String genderFilter = request.getParameter("gender");
         String searchFilter = request.getParameter("search");
         String minPriceStr = request.getParameter("minPrice");
         String maxPriceStr = request.getParameter("maxPrice");
@@ -168,9 +169,9 @@ public class ManageProductController extends HttpServlet {
         
         int offset = (page - 1) * pageSize;
         products = productDAO.findWithFilters(searchFilter, categoryId, collectionId, 
-                                              minPrice, maxPrice, status);
+                                              minPrice, maxPrice, status, genderFilter);
         totalProducts = productDAO.countFilteredProducts(searchFilter, categoryId, collectionId, 
-                                                       minPrice, maxPrice, status);
+                                                       minPrice, maxPrice, status, genderFilter);
         
      
         // Load categories and collections for filters
@@ -284,6 +285,7 @@ public class ManageProductController extends HttpServlet {
         String collectionIdStr = request.getParameter("collectionId");
         String description = request.getParameter("description");
         String statusStr = request.getParameter("status");
+        String gender = request.getParameter("gender");
         
         try {
             int id = Integer.parseInt(idStr);
@@ -307,6 +309,7 @@ public class ManageProductController extends HttpServlet {
             product.setCollectionID(collectionId);
             product.setDescription(description);
             product.setStatus(status);
+            product.setGender(gender);
             
             boolean success = productDAO.update(product);
             
@@ -334,6 +337,7 @@ public class ManageProductController extends HttpServlet {
             int collectionId = Integer.parseInt(request.getParameter("collectionId"));
             String description = request.getParameter("description");
             int status = Integer.parseInt(request.getParameter("status"));
+            String gender = request.getParameter("gender");
             
             // Tạo đối tượng Product
             Product product = new Product();
@@ -343,6 +347,7 @@ public class ManageProductController extends HttpServlet {
             product.setCollectionID(collectionId);
             product.setDescription(description);
             product.setStatus(status);
+            product.setGender(gender);
             
             // Thêm sản phẩm vào database
             ProductDAO productDAO = new ProductDAO();

@@ -44,8 +44,8 @@ public class ManageVariationController extends HttpServlet {
             listWithFilters(request, response);
         } else {
             switch (action) {
-                case "details":
-                    showDetails(request, response);
+                case "edit-variation":
+                    showAddVariationForm(request, response);
                     break;
                 case "addform":
                     showAddForm(request, response);

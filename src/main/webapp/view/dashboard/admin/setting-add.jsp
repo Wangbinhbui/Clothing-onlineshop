@@ -46,28 +46,34 @@
                             <div class="col-xxl-6 col-xl-8 col-lg-10">
                                 <div class="card border">
                                     <div class="card-body">                                      
-                                        <form action="${pageContext.request.contextPath}/manage-settings" method="POST"">
+                                        <form action="${pageContext.request.contextPath}/manage-settings" method="POST">
                                         <input type="hidden" name="action" value="add">
 
                                         <div class="mb-20">
-                                            <label for="depart" class="form-label fw-semibold text-primary-light text-sm mb-8">Type<span class="text-danger-600">*</span> </label>
-                                            <select class="form-control radius-8 form-select" id="depart" name="type">
+                                            <label for="type" class="form-label fw-semibold text-primary-light text-sm mb-8">Type<span class="text-danger-600">*</span> </label>
+                                            <select class="form-control radius-8 form-select" id="type" name="type">
                                                 <option value="System">System</option>
                                                 <option value="User">User</option>
                                                 <option value="Payment">Payment</option>
+                                                <option value="Email">Email</option>
+                                                <option value="Notification">Notification</option>
                                             </select>
                                         </div>
                                         <div class="mb-20">
-                                            <label for="name" class="form-label fw-semibold text-primary-light text-sm mb-8">Value <span class="text-danger-600">*</span></label>
-                                            <input type="text" class="form-control radius-8" id="name" placeholder="Enter Value" name="value" required="">
+                                            <label for="key" class="form-label fw-semibold text-primary-light text-sm mb-8">Key <span class="text-danger-600">*</span></label>
+                                            <input type="text" class="form-control radius-8" id="key" placeholder="Enter Key" name="key" required>
                                         </div>
                                         <div class="mb-20">
-                                            <label for="name" class="form-label fw-semibold text-primary-light text-sm mb-8">Order <span class="text-danger-600">*</span></label>
-                                            <input type="number" class="form-control radius-8" id="name" placeholder="Enter Order" name="order" required="">
+                                            <label for="value" class="form-label fw-semibold text-primary-light text-sm mb-8">Value <span class="text-danger-600">*</span></label>
+                                            <input type="text" class="form-control radius-8" id="value" placeholder="Enter Value" name="value" required>
                                         </div>
                                         <div class="mb-20">
-                                            <label for="depart" class="form-label fw-semibold text-primary-light text-sm mb-8">Status<span class="text-danger-600">*</span> </label>
-                                            <select class="form-control radius-8 form-select" id="depart" name="status">
+                                            <label for="order" class="form-label fw-semibold text-primary-light text-sm mb-8">Order <span class="text-danger-600">*</span></label>
+                                            <input type="number" class="form-control radius-8" id="order" placeholder="Enter Order" name="order" required>
+                                        </div>
+                                        <div class="mb-20">
+                                            <label for="status" class="form-label fw-semibold text-primary-light text-sm mb-8">Status<span class="text-danger-600">*</span> </label>
+                                            <select class="form-control radius-8 form-select" id="status" name="status">
                                                 <option value="Active">Active</option>
                                                 <option value="Inactive">Inactive</option>                       
                                             </select>

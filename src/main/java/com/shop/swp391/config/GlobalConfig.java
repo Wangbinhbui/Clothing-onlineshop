@@ -61,7 +61,7 @@ public class GlobalConfig {
      */
     public static String GOOGLE_GRANT_TYPE = "authorization_code";
 
-
+    public static final Integer ROLE_USER = 4;
     public static final Integer ROLE_STUDENT = 3;
     public static final Integer ROLE_CUSTOMER = 4;
     public static final Integer ROLE_ADMIN = 1;
@@ -69,5 +69,8 @@ public class GlobalConfig {
     public static final Integer ROLE_TEACHER = 2;
     
     public static final Integer PAGINATION_PER_PAGE = 9;
+    
+    public static final String SETTING_KEY_EMAIL_APP_USERNAME = "SETTING_KEY_EMAIL_APP_USERNAME";
+    public static final String SETTING_KEY_EMAIL_APP_PASSWORD = "SETTING_KEY_EMAIL_APP_PASSWORD";
 
 }

@@ -5,6 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!doctype html>
 <html class="no-js" lang="en">
 
@@ -25,6 +26,34 @@
     <!-- Bootstrap fremwork main css -->
     <jsp:include page="../common/home/css-home.jsp"></jsp:include>
 
+    <!-- Custom styles for slider -->
+    <style>
+        .slider-area {
+            overflow: hidden;
+        }
+        .single-slider {
+            position: relative;
+            overflow: hidden;
+        }
+        .slider-img {
+            width: 100%;
+            height: 500px;
+            overflow: hidden;
+            position: relative;
+        }
+        .slider-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        @media (max-width: 767px) {
+            .slider-img, .slider-img img {
+                height: 350px;
+            }
+        }
+    </style>
+
 
    
 </head>
@@ -44,30 +73,38 @@
         <!--slider area start-->
         <div class="slider-area pos-rltv carosule-pagi cp-line">
             <div class="active-slider">
-                <div class="single-slider pos-rltv">
-                    <div class="slider-img"><img src="${pageContext.request.contextPath}/assets/home/images/slider/slider01.jpg" alt=""></div>
-                    <div class="slider-content pos-abs">
-                        <h4>Best Collection</h4>
-                        <h1 class="uppercase pos-rltv underline">exclusive Fashion 2022</h1>
-                        <a href="#" class="btn-def btn-white">Shop Now</a>
+                <c:if test="${not empty sliderStories}">
+                    <c:forEach var="story" items="${sliderStories}">
+                        <div class="single-slider pos-rltv">
+                            <div class="slider-img">
+                                <img src="${pageContext.request.contextPath}/${story.thumbnail}" 
+                                     alt="${story.title}" 
+                                     style="width: 100%; height: 500px; object-fit: cover;" 
+                                     onerror="this.src='${pageContext.request.contextPath}/assets/home/images/slider/slider01.jpg'">
+                            </div>
+                            <div class="slider-content pos-abs">
+                                <h4>${story.title}</h4>
+                                <h1 class="uppercase pos-rltv underline">Shop Now</h1>
+                                <a href="${story.backlink}" class="btn-def btn-white">Shop Now</a>
+                            </div>
+                        </div>
+                    </c:forEach>
+                </c:if>
+                <c:if test="${empty sliderStories}">
+                    <!-- Fallback slider if no stories are available -->
+                    <div class="single-slider pos-rltv">
+                        <div class="slider-img">
+                            <img src="${pageContext.request.contextPath}/assets/home/images/slider/slider01.jpg" 
+                                 alt="Best Collection" 
+                                 style="width: 100%; height: 500px; object-fit: cover;">
+                        </div>
+                        <div class="slider-content pos-abs">
+                            <h4>Best Collection</h4>
+                            <h1 class="uppercase pos-rltv underline">exclusive Fashion 2023</h1>
+                            <a href="#" class="btn-def btn-white">Shop Now</a>
+                        </div>
                     </div>
-                </div>
-                <div class="single-slider pos-rltv">
-                    <div class="slider-img"><img src="${pageContext.request.contextPath}/assets/home/images/slider/slider02.jpg" alt=""></div>
-                    <div class="slider-content pos-abs">
-                        <h4>Best Collection</h4>
-                        <h1 class="uppercase pos-rltv underline">exclusive Fashion 2022</h1>
-                        <a href="#" class="btn-def btn-white">Shop Now</a>
-                    </div>
-                </div>
-                <div class="single-slider pos-rltv">
-                    <div class="slider-img"><img src="${pageContext.request.contextPath}/assets/home/images/slider/slider01.jpg" alt=""></div>
-                    <div class="slider-content pos-abs">
-                        <h4>Best Collection</h4>
-                        <h1 class="uppercase pos-rltv underline">exclusive Fashion 2022</h1>
-                        <a href="#" class="btn-def btn-white">Shop Now</a>
-                    </div>
-                </div>
+                </c:if>
             </div>
         </div>
         <!--slider area start-->
@@ -1320,25 +1357,27 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="single-ctg-item">
-                                    <div class="row">
-                                        <div class="col-lg-6 col-md-12 col-sm-6">
-                                            <div class="product-ctg-img pos-rltv product-overlay">
-                                                <a href="single-product.html"><img src="${pageContext.request.contextPath}/assets/home/images/product/s02.jpg"
-                                                        alt=""></a>
+                                <div class="single-ctg new-arrival-ctg">
+                                    <div class="single-ctg-item">
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-12 col-sm-6">
+                                                <div class="product-ctg-img pos-rltv product-overlay">
+                                                    <a href="single-product.html"><img src="${pageContext.request.contextPath}/assets/home/images/product/s02.jpg"
+                                                            alt=""></a>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-lg-6 col-md-12 col-sm-6">
-                                            <div class="product-ctg-content">
-                                                <p>Primo Court Mid Suede</p>
-                                                <p class="font-bold">$236.99</p>
-                                                <div class="social-icon socile-icon-style-1 mt-15">
-                                                    <ul>
-                                                        <li><a href="#"><i class="zmdi zmdi-shopping-cart"></i></a></li>
-                                                        <li><a href="#" data-tooltip="Quick View" class="q-view"
-                                                                data-bs-toggle="modal" data-bs-target=".modal"
-                                                                tabindex="0"><i class="zmdi zmdi-eye"></i></a></li>
-                                                    </ul>
+                                            <div class="col-lg-6 col-md-12 col-sm-6">
+                                                <div class="product-ctg-content">
+                                                    <p>Primo Court Mid Suede</p>
+                                                    <p class="font-bold">$236.99</p>
+                                                    <div class="social-icon socile-icon-style-1 mt-15">
+                                                        <ul>
+                                                            <li><a href="#"><i class="zmdi zmdi-shopping-cart"></i></a></li>
+                                                            <li><a href="#" data-tooltip="Quick View" class="q-view"
+                                                                    data-bs-toggle="modal" data-bs-target=".modal"
+                                                                    tabindex="0"><i class="zmdi zmdi-eye"></i></a></li>
+                                                        </ul>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

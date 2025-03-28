@@ -30,6 +30,9 @@
                         <c:if test="${not empty param.collection}">
                             <c:param name="collection" value="${param.collection}" />
                         </c:if>
+                        <c:if test="${not empty param.gender}">
+                            <c:param name="gender" value="${param.gender}" />
+                        </c:if>
                         <c:if test="${not empty param.minPrice}">
                             <c:param name="minPrice" value="${param.minPrice}" />
                         </c:if>
@@ -89,6 +92,14 @@
                                             </c:forEach>
                                         </select>
 
+                                        <select class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px"
+                                            name="gender">
+                                            <option value="">All Genders</option>
+                                            <option value="man" ${param.gender=='man' ? 'selected' : '' }>Man</option>
+                                            <option value="woman" ${param.gender=='woman' ? 'selected' : '' }>Woman</option>
+                                            <option value="unisex" ${param.gender=='unisex' ? 'selected' : '' }>Unisex</option>
+                                        </select>
+
                                         <div class="d-flex align-items-center">
                                             <input type="number"
                                                 class="form-control form-control-sm w-auto ps-12 py-6 radius-12 h-40-px"
@@ -138,6 +149,7 @@
                                                 <th scope="col">Price</th>
                                                 <th scope="col">Category</th>
                                                 <th scope="col">Collection</th>
+                                                <th scope="col">Gender</th>
                                                 <th scope="col" class="text-center">Status</th>
                                                 <th scope="col" class="text-center">Action</th>
                                             </tr>
@@ -165,6 +177,9 @@
                                                                 ${collection.collectionName}
                                                             </c:if>
                                                         </c:forEach>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge bg-info">${product.gender}</span>
                                                     </td>
                                                     <td class="text-center">
                                                         <c:choose>

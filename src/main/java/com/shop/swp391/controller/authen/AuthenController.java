@@ -139,7 +139,7 @@ public class AuthenController extends HttpServlet {
                 .username(username)
                 .email(email)
                 .password(MD5PasswordEncoderUtils.encodeMD5(password))
-                .roleId(GlobalConfig.ROLE_STUDENT)
+                .roleId(GlobalConfig.ROLE_CUSTOMER)
                 .active(false) // Đặt trạng thái ban đầu là "Inactive"
                 .sex(true)
                 .build();
@@ -164,7 +164,7 @@ public class AuthenController extends HttpServlet {
                 session.setMaxInactiveInterval(300);
 
                 // Gửi OTP
-                String otp = EmailUtils.sendOTPMail(email);
+                String otp = EmailUtils.sendOTPMail(request.getServletContext(), email);
                 session.setAttribute("otp", otp);
                 session.setAttribute("otp_purpose", "activation"); // Thêm mục đích OTP
 
@@ -221,7 +221,7 @@ public class AuthenController extends HttpServlet {
 
         // Gửi OTP
         HttpSession session = request.getSession();
-        String otp = EmailUtils.sendOTPMail(email);
+        String otp = EmailUtils.sendOTPMail(request.getServletContext(), email);
 
         // Lưu thông tin vào session
         session.setAttribute("otp", otp);

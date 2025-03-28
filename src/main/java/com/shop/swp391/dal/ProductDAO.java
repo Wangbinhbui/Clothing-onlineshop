@@ -38,7 +38,7 @@ public class ProductDAO extends DBContext implements I_DAO<Product> {
 
     @Override
     public boolean update(Product product) {
-        String sql = "UPDATE product SET CategoryID = ?, ProductName = ?, Price = ?, CollectionID = ?, description = ?, status = ? WHERE ProductID = ?";
+        String sql = "UPDATE product SET CategoryID = ?, ProductName = ?, Price = ?, CollectionID = ?, description = ?, status = ?, gender = ? WHERE ProductID = ?";
         try {
             connection = getConnection();
             statement = connection.prepareStatement(sql);
@@ -48,7 +48,8 @@ public class ProductDAO extends DBContext implements I_DAO<Product> {
             statement.setInt(4, product.getCollectionID());
             statement.setString(5, product.getDescription());
             statement.setInt(6, product.getStatus());
-            statement.setInt(7, product.getProductID());
+            statement.setString(7, product.getGender());
+            statement.setInt(8, product.getProductID());
             
             int affectedRows = statement.executeUpdate();
             return affectedRows > 0;
@@ -80,7 +81,7 @@ public class ProductDAO extends DBContext implements I_DAO<Product> {
 
     @Override
     public int insert(Product product) {
-        String sql = "INSERT INTO product (CategoryID, ProductName, Price, CollectionID, description, status) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO product (CategoryID, ProductName, Price, CollectionID, description, status, gender) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try {
             connection = getConnection();
             statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -90,6 +91,7 @@ public class ProductDAO extends DBContext implements I_DAO<Product> {
             statement.setInt(4, product.getCollectionID());
             statement.setString(5, product.getDescription());
             statement.setInt(6, product.getStatus());
+            statement.setString(7, product.getGender());
             
             int affectedRows = statement.executeUpdate();
             
@@ -122,6 +124,7 @@ public class ProductDAO extends DBContext implements I_DAO<Product> {
                 .collectionID(rs.getInt("CollectionID"))
                 .description(rs.getString("Description"))
                 .status(rs.getInt("status"))
+                .gender(rs.getString("gender"))
                 .build();
     }
 
@@ -446,7 +449,7 @@ public class ProductDAO extends DBContext implements I_DAO<Product> {
     }
 
     public List<Product> findWithFilters(String search, Integer categoryId, Integer collectionId,
-                                       Double minPrice, Double maxPrice, Integer status) {
+                                       Double minPrice, Double maxPrice, Integer status, String gender) {
         List<Product> products = new ArrayList<>();
         StringBuilder sql = new StringBuilder("SELECT * FROM product WHERE 1=1");
         List<Object> params = new ArrayList<>();
@@ -474,6 +477,10 @@ public class ProductDAO extends DBContext implements I_DAO<Product> {
         if (status != null) {
             sql.append(" AND status = ?");
             params.add(status);
+        }
+        if (gender != null && !gender.isEmpty()) {
+            sql.append(" AND gender = ?");
+            params.add(gender);
         }
 
         try {
@@ -504,7 +511,7 @@ public class ProductDAO extends DBContext implements I_DAO<Product> {
     }
 
     public int countFilteredProducts(String search, Integer categoryId, Integer collectionId, 
-                                   Double minPrice, Double maxPrice, Integer status) {
+                                   Double minPrice, Double maxPrice, Integer status, String gender) {
         StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM product WHERE 1=1");
         List<Object> params = new ArrayList<>();
 
@@ -531,6 +538,10 @@ public class ProductDAO extends DBContext implements I_DAO<Product> {
         if (status != null) {
             sql.append(" AND status = ?");
             params.add(status);
+        }
+        if (gender != null && !gender.isEmpty()) {
+            sql.append(" AND gender = ?");
+            params.add(gender);
         }
 
         try {
@@ -861,10 +872,11 @@ public class ProductDAO extends DBContext implements I_DAO<Product> {
      * @param minPrice Minimum price filter
      * @param maxPrice Maximum price filter
      * @param colorId Color ID filter
+     * @param gender Gender filter (man, woman, unisex)
      * @return List of products matching the criteria
      */
     public List<Product> searchProductsWithFilters(String searchQuery, int page, int pageSize, String sortBy, 
-                                       Double minPrice, Double maxPrice, Integer colorId) {
+                                       Double minPrice, Double maxPrice, Integer colorId, String gender) {
         List<Product> products = new ArrayList<>();
         int offset = (page - 1) * pageSize;
         
@@ -894,6 +906,11 @@ public class ProductDAO extends DBContext implements I_DAO<Product> {
         // Add color condition
         if (colorId != null) {
             sql.append(" AND v.color_ID = ?");
+        }
+        
+        // Add gender condition
+        if (gender != null && !gender.isEmpty()) {
+            sql.append(" AND p.gender = ?");
         }
         
         // Add sorting
@@ -944,6 +961,10 @@ public class ProductDAO extends DBContext implements I_DAO<Product> {
                 statement.setInt(paramIndex++, colorId);
             }
             
+            if (gender != null && !gender.isEmpty()) {
+                statement.setString(paramIndex++, gender);
+            }
+            
             statement.setInt(paramIndex++, pageSize);
             statement.setInt(paramIndex, offset);
             
@@ -967,9 +988,10 @@ public class ProductDAO extends DBContext implements I_DAO<Product> {
      * @param minPrice Minimum price filter
      * @param maxPrice Maximum price filter
      * @param colorId Color ID filter
+     * @param gender Gender filter (man, woman, unisex)
      * @return Total count of matching products
      */
-    public int countProductsWithFilters(String searchQuery, Double minPrice, Double maxPrice, Integer colorId) {
+    public int countProductsWithFilters(String searchQuery, Double minPrice, Double maxPrice, Integer colorId, String gender) {
         StringBuilder sql = new StringBuilder("SELECT COUNT(DISTINCT p.ProductID) FROM product p");
         
         // Join with variation if color filter is provided
@@ -998,6 +1020,11 @@ public class ProductDAO extends DBContext implements I_DAO<Product> {
             sql.append(" AND v.color_ID = ?");
         }
         
+        // Add gender condition
+        if (gender != null && !gender.isEmpty()) {
+            sql.append(" AND p.gender = ?");
+        }
+        
         try {
             connection = getConnection();
             statement = connection.prepareStatement(sql.toString());
@@ -1018,7 +1045,11 @@ public class ProductDAO extends DBContext implements I_DAO<Product> {
             }
             
             if (colorId != null) {
-                statement.setInt(paramIndex, colorId);
+                statement.setInt(paramIndex++, colorId);
+            }
+            
+            if (gender != null && !gender.isEmpty()) {
+                statement.setString(paramIndex++, gender);
             }
             
             resultSet = statement.executeQuery();
